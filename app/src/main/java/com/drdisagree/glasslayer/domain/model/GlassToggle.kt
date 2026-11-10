@@ -1,0 +1,29 @@
+package com.drdisagree.glasslayer.domain.model
+
+enum class GlassToggle {
+    ENABLED,
+    TILES,
+    FOOTER,
+    BRIGHTNESS,
+    MEDIA,
+    SHADE_BACKGROUND,
+    NOTIFICATIONS,
+    HEADS_UP,
+    LOCKSCREEN_NOTIFICATIONS,
+    LOCKSCREEN_SHORTCUTS,
+    BOUNCER,
+    VOLUME,
+    POWER_MENU,
+    SWITCHES,
+    SLIDERS,
+    BUTTONS,
+    VOLUME_PANEL,
+    DIALOGS,
+    TOASTS,
+    STATUS_BAR_CHIPS,
+    TRANSITIONS,
+    SETTINGS_CARDS,
+    INSTALLER_DIALOGS,
+    SWITCH_PRESS,
+    BUTTON_PRESS
+}
