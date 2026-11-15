@@ -12,3 +12,6 @@
 local.properties
 *.md
 !README.md
+/app/release/
+/app/debug/
+/app/review/
