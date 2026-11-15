@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Handler
@@ -19,6 +20,7 @@ import com.drdisagree.glasslayer.data.source.PrefKeys
 import com.drdisagree.glasslayer.xposed.compose.ComposeModifiers
 import com.drdisagree.glasslayer.xposed.compose.ComposeToolkit
 import com.drdisagree.glasslayer.xposed.glass.ComposeLiquidGlass
+import com.drdisagree.glasslayer.xposed.glass.GlassRim
 import com.drdisagree.glasslayer.xposed.hook.Guard
 import com.drdisagree.glasslayer.xposed.hook.HookEnv
 import com.drdisagree.glasslayer.xposed.hook.call
@@ -51,6 +53,8 @@ object SwitchGlass {
     private val recomposeScopes = Collections.newSetFromMap(WeakHashMap<Any, Boolean>())
     private val modifierToOriginal = WeakHashMap<Any, Any>()
     private val plainPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val rimRect = RectF()
+    private val rimRadii = FloatArray(CORNERS)
     private val mainHandler = Handler(Looper.getMainLooper())
     private val checkedState = intArrayOf(AndroidR.attr.state_checked, AndroidR.attr.state_enabled)
     private val uncheckedState = intArrayOf(AndroidR.attr.state_enabled)
@@ -170,8 +174,7 @@ object SwitchGlass {
                 key = TRACK_KEY
             )
         } else {
-            plainPaint.color = trackColor
-            canvas.drawRoundRect(left, top, left + width, top + height, height / 2f, height / 2f, plainPaint)
+            drawPlainTrack(canvas, left, top, width, height, trackColor, density, surface)
         }
         motion.thumb.drawToggle(
             canvas,
@@ -257,8 +260,7 @@ object SwitchGlass {
                 surface.style
             )
         } else {
-            plainPaint.color = trackColor
-            canvas.drawRoundRect(left, top, left + trackWidth, top + trackHeight, trackHeight / 2f, trackHeight / 2f, plainPaint)
+            drawPlainTrack(canvas, left, top, trackWidth, trackHeight, trackColor, density, surface)
         }
         motion.thumb.drawToggle(
             canvas,
@@ -274,6 +276,24 @@ object SwitchGlass {
             behind.withOpaque(),
             if (enabled) 1f else DISABLED_ALPHA
         )
+    }
+
+    private fun drawPlainTrack(
+        canvas: Canvas,
+        left: Float,
+        top: Float,
+        width: Float,
+        height: Float,
+        color: Int,
+        density: Float,
+        surface: SurfaceStyle
+    ) {
+        val radius = height / 2f
+        plainPaint.color = ColorBlend.scaleAlpha(color, GlassConfig.switchTint)
+        canvas.drawRoundRect(left, top, left + width, top + height, radius, radius, plainPaint)
+        rimRect.set(left, top, left + width, top + height)
+        rimRadii.fill(radius)
+        GlassRim.draw(canvas, rimRect, rimRadii, density, 1f, rim = surface.style.rim, reflection = surface.style.reflection)
     }
 
     private fun onGlass(root: View?): Boolean = ComposeLiquidGlass.rootHasGlass(root) { key ->
