@@ -79,6 +79,7 @@ fun AndroidGlassScene(modifier: Modifier = Modifier, topInset: Dp = 0.dp) {
                         lens(paneSize.toPx() * REFRACTION_HEIGHT, paneSize.toPx() * REFRACTION_AMOUNT, depthEffect = true)
                     },
                     highlight = { Highlight.Default },
+                    layerBlock = { rotationZ = WOBBLE_TILT * sin(angle * WOBBLE_CYCLES) },
                     onDrawSurface = { drawRect(PaneFill) }
                 )
         )
@@ -123,6 +124,8 @@ private const val PANE_Y = 0.29f
 private const val HOVER_X = 0.07f
 private const val HOVER_Y = 0.05f
 private const val HOVER_MS = 7000
+private const val WOBBLE_CYCLES = 2f
+private const val WOBBLE_TILT = 3f
 private const val REFRACTION_HEIGHT = 0.2f
 private const val REFRACTION_AMOUNT = 0.22f
 private const val GREEN_GLOW = 0.18f
