@@ -231,6 +231,16 @@ enum class GlassPage(
         true,
         listOf(GlassLevel.INSTALLER_DIALOG_TINT),
         listOf(StyleParam.BLUR_RADIUS, StyleParam.REFLECTION, StyleParam.RIM)
+    ),
+    KEYBOARD(
+        R.string.mod_keyboard,
+        R.string.page_keyboard_title,
+        R.string.mod_keyboard_summary,
+        GlassToggle.KEYBOARD,
+        GlassSurface.KEYBOARD,
+        true,
+        listOf(GlassLevel.KEYBOARD_TINT, GlassLevel.KEYBOARD_KEY_TINT, GlassLevel.KEYBOARD_ACCENT_TINT),
+        listOf(StyleParam.BLUR_RADIUS, StyleParam.REFLECTION, StyleParam.RIM)
     );
 
     val hasSettings: Boolean

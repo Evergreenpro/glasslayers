@@ -49,6 +49,9 @@ internal fun levelLabel(level: GlassLevel): Int = when (level) {
     GlassLevel.SETTINGS_ICON_TINT -> R.string.level_settings_icon_tint
     GlassLevel.SETTINGS_ACCENT_TINT -> R.string.level_settings_accent_tint
     GlassLevel.INSTALLER_DIALOG_TINT -> R.string.level_installer_dialog_tint
+    GlassLevel.KEYBOARD_TINT -> R.string.level_keyboard_tint
+    GlassLevel.KEYBOARD_KEY_TINT -> R.string.level_keyboard_key_tint
+    GlassLevel.KEYBOARD_ACCENT_TINT -> R.string.level_keyboard_accent_tint
 }
 
 @StringRes

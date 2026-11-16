@@ -39,6 +39,6 @@ enum class ModGroup(@param:StringRes val title: Int, @param:DrawableRes val icon
     SETTINGS_APP(
         R.string.group_settings_app,
         R.drawable.ic_section_system_apps,
-        listOf(GlassPage.SETTINGS_CARDS, GlassPage.INSTALLER_DIALOGS)
+        listOf(GlassPage.SETTINGS_CARDS, GlassPage.INSTALLER_DIALOGS, GlassPage.KEYBOARD)
     )
 }

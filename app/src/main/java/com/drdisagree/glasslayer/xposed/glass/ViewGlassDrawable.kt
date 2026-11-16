@@ -39,10 +39,11 @@ class ViewGlassDrawable(
         Guard.run(TAG, Unit) { drawGlass(canvas) }
     }
 
-    fun drawRim(canvas: Canvas, strength: Float, sheen: Boolean = false) {
+    fun drawRim(canvas: Canvas, strength: Float, sheen: Boolean = false, bottomExtend: Int = 0) {
         Guard.run(RIM_TAG, Unit) {
             val current = params()
             if (resolveGeometry(current)) {
+                if (bottomExtend > 0) glassBounds.bottom += bottomExtend
                 GlassRim.draw(
                     canvas,
                     glassBounds,

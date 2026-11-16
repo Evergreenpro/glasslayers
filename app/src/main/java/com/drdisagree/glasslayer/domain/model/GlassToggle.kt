@@ -25,6 +25,7 @@ enum class GlassToggle {
     TRANSITIONS,
     SETTINGS_CARDS,
     INSTALLER_DIALOGS,
+    KEYBOARD,
     SWITCH_PRESS,
     BUTTON_PRESS
 }

@@ -33,6 +33,7 @@ object GlassPrefMapper {
         GlassToggle.TRANSITIONS -> PrefKeys.TRANSITIONS
         GlassToggle.SETTINGS_CARDS -> PrefKeys.SETTINGS_CARDS
         GlassToggle.INSTALLER_DIALOGS -> PrefKeys.INSTALLER_DIALOGS
+        GlassToggle.KEYBOARD -> PrefKeys.KEYBOARD
         GlassToggle.SWITCH_PRESS -> PrefKeys.SWITCH_PRESS
         GlassToggle.BUTTON_PRESS -> PrefKeys.BUTTON_PRESS
     }
@@ -86,6 +87,9 @@ object GlassPrefMapper {
         GlassLevel.SETTINGS_ICON_TINT -> PrefKeys.SETTINGS_ICON_TINT
         GlassLevel.SETTINGS_ACCENT_TINT -> PrefKeys.SETTINGS_ACCENT_TINT
         GlassLevel.INSTALLER_DIALOG_TINT -> PrefKeys.INSTALLER_DIALOG_TINT
+        GlassLevel.KEYBOARD_TINT -> PrefKeys.KEYBOARD_TINT
+        GlassLevel.KEYBOARD_KEY_TINT -> PrefKeys.KEYBOARD_KEY_TINT
+        GlassLevel.KEYBOARD_ACCENT_TINT -> PrefKeys.KEYBOARD_ACCENT_TINT
     }
 
     fun default(level: GlassLevel): Float = when (level) {
@@ -131,6 +135,9 @@ object GlassPrefMapper {
         GlassLevel.SETTINGS_ICON_TINT -> PrefKeys.DEFAULT_SETTINGS_ICON_TINT
         GlassLevel.SETTINGS_ACCENT_TINT -> PrefKeys.DEFAULT_SETTINGS_ACCENT_TINT
         GlassLevel.INSTALLER_DIALOG_TINT -> PrefKeys.DEFAULT_INSTALLER_DIALOG_TINT
+        GlassLevel.KEYBOARD_TINT -> PrefKeys.DEFAULT_KEYBOARD_TINT
+        GlassLevel.KEYBOARD_KEY_TINT -> PrefKeys.DEFAULT_KEYBOARD_KEY_TINT
+        GlassLevel.KEYBOARD_ACCENT_TINT -> PrefKeys.DEFAULT_KEYBOARD_ACCENT_TINT
     }
 
     fun key(param: StyleParam): String = when (param) {
@@ -169,6 +176,7 @@ object GlassPrefMapper {
         GlassSurface.TRANSITIONS -> PrefKeys.TRANSITIONS
         GlassSurface.SETTINGS_CARDS -> PrefKeys.SETTINGS_CARDS
         GlassSurface.INSTALLER_DIALOGS -> PrefKeys.INSTALLER_DIALOGS
+        GlassSurface.KEYBOARD -> PrefKeys.KEYBOARD
     }
 
     fun key(surface: GlassSurface, param: StyleParam): String = PrefKeys.styleOverride(key(surface), key(param))

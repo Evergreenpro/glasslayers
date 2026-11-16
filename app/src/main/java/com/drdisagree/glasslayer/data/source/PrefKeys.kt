@@ -79,6 +79,10 @@ object PrefKeys {
     const val SETTINGS_CARDS = "settings_cards"
     const val INSTALLER_DIALOGS = "installer_dialogs"
     const val INSTALLER_DIALOG_TINT = "installer_dialog_tint"
+    const val KEYBOARD = "keyboard"
+    const val KEYBOARD_TINT = "keyboard_tint"
+    const val KEYBOARD_KEY_TINT = "keyboard_key_tint"
+    const val KEYBOARD_ACCENT_TINT = "keyboard_accent_tint"
     const val SETTINGS_CARD_TINT = "settings_card_tint"
     const val SETTINGS_ICON_TINT = "settings_icon_tint"
     const val SETTINGS_ACCENT_TINT = "settings_accent_tint"
@@ -106,7 +110,8 @@ object PrefKeys {
         STATUS_BAR_CHIPS,
         TRANSITIONS,
         SETTINGS_CARDS,
-        INSTALLER_DIALOGS
+        INSTALLER_DIALOGS,
+        KEYBOARD
     )
     val STYLE_PARAMS = listOf(BLUR_RADIUS, REFRACTION, REFLECTION, RIM, SHADOW)
 
@@ -160,4 +165,7 @@ object PrefKeys {
     const val DEFAULT_SETTINGS_ICON_TINT = 75f
     const val DEFAULT_SETTINGS_ACCENT_TINT = 85f
     const val DEFAULT_INSTALLER_DIALOG_TINT = 65f
+    const val DEFAULT_KEYBOARD_TINT = 60f
+    const val DEFAULT_KEYBOARD_KEY_TINT = 45f
+    const val DEFAULT_KEYBOARD_ACCENT_TINT = 80f
 }

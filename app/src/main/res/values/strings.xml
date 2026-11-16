@@ -175,6 +175,12 @@
     <string name="mod_installer_dialogs_summary">Glass install and uninstall dialogs</string>
     <string name="page_installer_dialogs_title">Installer dialogs</string>
     <string name="level_installer_dialog_tint">Dialog tint</string>
+    <string name="mod_keyboard">Keyboard</string>
+    <string name="mod_keyboard_summary">Glass Gboard keys and panel</string>
+    <string name="page_keyboard_title">Keyboard</string>
+    <string name="level_keyboard_tint">Panel tint</string>
+    <string name="level_keyboard_key_tint">Key tint</string>
+    <string name="level_keyboard_accent_tint">Accent key tint</string>
     <string name="mod_buttons">Buttons</string>
     <string name="mod_buttons_summary">Liquid glass buttons everywhere</string>
     <string name="page_buttons_title">Buttons</string>

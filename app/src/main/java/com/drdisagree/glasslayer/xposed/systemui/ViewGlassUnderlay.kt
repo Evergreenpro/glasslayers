@@ -116,7 +116,7 @@ object ViewGlassUnderlay {
             val result = stock()
             if (target.rimOnTop && target.tinted != null && target.stockAlpha > 0) {
                 val strength = if (GlassConfig.glassAvailable) target.appliedAlpha.coerceAtLeast(0) / target.stockAlpha.toFloat() else 1f
-                target.glass?.drawRim(canvas, strength, target.sheenOnTop)
+                target.glass?.drawRim(canvas, strength, target.sheenOnTop, target.rimExtend?.invoke(view) ?: 0)
             }
             return result
         } finally {
@@ -211,7 +211,8 @@ object ViewGlassUnderlay {
         rimOnTop: Boolean = false,
         segmented: Boolean = false,
         sheenOnTop: Boolean = false,
-        backdrop: ((View) -> Drawable?)? = null
+        backdrop: ((View) -> Drawable?)? = null,
+        rimExtend: ((View) -> Int)? = null
     ) {
         val existing = targets[view]
         if (existing == null) {
@@ -222,6 +223,7 @@ object ViewGlassUnderlay {
                     it.segmented = segmented
                     it.sheenOnTop = sheenOnTop
                     it.backdrop = backdrop
+                    it.rimExtend = rimExtend
                 }
         } else {
             existing.tintInGlass = tintInGlass
@@ -233,6 +235,7 @@ object ViewGlassUnderlay {
             existing.clipJoin = clipJoin
             existing.baseResolved = false
             existing.backdrop = backdrop
+            existing.rimExtend = rimExtend
         }
         view.invalidate()
     }

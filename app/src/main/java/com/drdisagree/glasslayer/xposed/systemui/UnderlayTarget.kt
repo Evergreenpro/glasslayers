@@ -36,6 +36,7 @@ internal class UnderlayTarget(
     var segmented = false
     var sheenOnTop = false
     var backdrop: ((View) -> Drawable?)? = null
+    var rimExtend: ((View) -> Int)? = null
 
     companion object {
         const val OPAQUE = 255

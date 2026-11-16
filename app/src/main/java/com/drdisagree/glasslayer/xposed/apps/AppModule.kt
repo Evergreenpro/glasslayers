@@ -5,6 +5,7 @@ import com.drdisagree.glasslayer.xposed.prefs.ModulePrefs
 import com.drdisagree.glasslayer.xposed.systemui.ButtonGlass
 import com.drdisagree.glasslayer.xposed.systemui.GlassConfig
 import com.drdisagree.glasslayer.xposed.systemui.InstallerDialogGlass
+import com.drdisagree.glasslayer.xposed.systemui.KeyboardGlass
 import com.drdisagree.glasslayer.xposed.systemui.SettingsCardGlass
 import com.drdisagree.glasslayer.xposed.systemui.SliderGlass
 import com.drdisagree.glasslayer.xposed.systemui.SwitchGlass
@@ -16,7 +17,8 @@ object AppModule {
     val PACKAGES = setOf(
         "com.android.settings",
         "com.google.android.packageinstaller",
-        "com.android.packageinstaller"
+        "com.android.packageinstaller",
+        "com.google.android.inputmethod.latin"
     )
 
     private val started = AtomicBoolean(false)
@@ -27,7 +29,8 @@ object AppModule {
         "SliderGlass" to SliderGlass::install,
         "ButtonGlass" to ButtonGlass::install,
         "SettingsCardGlass" to SettingsCardGlass::install,
-        "InstallerDialogGlass" to InstallerDialogGlass::install
+        "InstallerDialogGlass" to InstallerDialogGlass::install,
+        "KeyboardGlass" to KeyboardGlass::install
     )
 
     fun claim(): Boolean = started.compareAndSet(false, true)
@@ -44,6 +47,7 @@ object AppModule {
                 ButtonGlass.refresh()
                 SettingsCardGlass.refresh()
                 InstallerDialogGlass.refresh()
+                KeyboardGlass.refresh()
                 ViewGlassUnderlay.refresh()
             } catch (throwable: Throwable) {
                 HookEnv.log("Refresh failed", throwable)

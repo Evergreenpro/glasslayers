@@ -157,6 +157,10 @@ object GlassConfig {
     var installerDialogs = PrefKeys.DEFAULT_MODULE
         private set
     var installerDialogTint = PrefKeys.DEFAULT_INSTALLER_DIALOG_TINT / 100f
+    var keyboard = PrefKeys.DEFAULT_MODULE
+    var keyboardTint = PrefKeys.DEFAULT_KEYBOARD_TINT / 100f
+    var keyboardKeyTint = PrefKeys.DEFAULT_KEYBOARD_KEY_TINT / 100f
+    var keyboardAccentTint = PrefKeys.DEFAULT_KEYBOARD_ACCENT_TINT / 100f
         private set
 
     @Volatile
@@ -236,6 +240,9 @@ object GlassConfig {
 
     val installerDialogsActive: Boolean
         get() = enabled && installerDialogs
+
+    val keyboardActive: Boolean
+        get() = enabled && keyboard
 
     val glassAvailable: Boolean
         get() = liveGlass && isActive
@@ -344,6 +351,10 @@ object GlassConfig {
         settingsAccentTint = percent(PrefKeys.SETTINGS_ACCENT_TINT, PrefKeys.DEFAULT_SETTINGS_ACCENT_TINT)
         installerDialogs = ModulePrefs.boolean(PrefKeys.INSTALLER_DIALOGS, PrefKeys.DEFAULT_MODULE)
         installerDialogTint = percent(PrefKeys.INSTALLER_DIALOG_TINT, PrefKeys.DEFAULT_INSTALLER_DIALOG_TINT)
+        keyboard = ModulePrefs.boolean(PrefKeys.KEYBOARD, PrefKeys.DEFAULT_MODULE)
+        keyboardTint = percent(PrefKeys.KEYBOARD_TINT, PrefKeys.DEFAULT_KEYBOARD_TINT)
+        keyboardKeyTint = percent(PrefKeys.KEYBOARD_KEY_TINT, PrefKeys.DEFAULT_KEYBOARD_KEY_TINT)
+        keyboardAccentTint = percent(PrefKeys.KEYBOARD_ACCENT_TINT, PrefKeys.DEFAULT_KEYBOARD_ACCENT_TINT)
     }
 
     private fun styleOf(blurDp: Float, refraction: Float, reflection: Float, rim: Float, shadow: Float) =
