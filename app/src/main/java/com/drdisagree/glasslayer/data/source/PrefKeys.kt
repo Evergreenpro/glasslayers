@@ -68,6 +68,8 @@ object PrefKeys {
     const val DIALOG_ACTIVE_TINT = "dialog_active_tint"
     const val TOASTS = "toasts"
     const val TOAST_TINT = "toast_tint"
+    const val BACK_GESTURE = "back_gesture"
+    const val BACK_GESTURE_TINT = "back_gesture_tint"
     const val BUTTONS = "buttons"
     const val BUTTON_TINT = "button_tint"
     const val STATUS_BAR_CHIPS = "status_bar_chips"
@@ -100,6 +102,7 @@ object PrefKeys {
         VOLUME_PANEL,
         DIALOGS,
         TOASTS,
+        BACK_GESTURE,
         STATUS_BAR_CHIPS,
         TRANSITIONS,
         SETTINGS_CARDS,
@@ -149,6 +152,7 @@ object PrefKeys {
     const val DEFAULT_DIALOG_ACCENT_TINT = 70f
     const val DEFAULT_DIALOG_ACTIVE_TINT = 85f
     const val DEFAULT_TOAST_TINT = 50f
+    const val DEFAULT_BACK_GESTURE_TINT = 35f
     const val DEFAULT_BUTTON_TINT = 60f
     const val DEFAULT_STATUS_BAR_CHIP_TINT = 70f
     const val DEFAULT_TRANSITION_TINT = 50f

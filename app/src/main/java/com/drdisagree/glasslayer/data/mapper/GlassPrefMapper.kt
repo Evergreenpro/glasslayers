@@ -28,6 +28,7 @@ object GlassPrefMapper {
         GlassToggle.VOLUME_PANEL -> PrefKeys.VOLUME_PANEL
         GlassToggle.DIALOGS -> PrefKeys.DIALOGS
         GlassToggle.TOASTS -> PrefKeys.TOASTS
+        GlassToggle.BACK_GESTURE -> PrefKeys.BACK_GESTURE
         GlassToggle.STATUS_BAR_CHIPS -> PrefKeys.STATUS_BAR_CHIPS
         GlassToggle.TRANSITIONS -> PrefKeys.TRANSITIONS
         GlassToggle.SETTINGS_CARDS -> PrefKeys.SETTINGS_CARDS
@@ -77,6 +78,7 @@ object GlassPrefMapper {
         GlassLevel.DIALOG_ACCENT_TINT -> PrefKeys.DIALOG_ACCENT_TINT
         GlassLevel.DIALOG_ACTIVE_TINT -> PrefKeys.DIALOG_ACTIVE_TINT
         GlassLevel.TOAST_TINT -> PrefKeys.TOAST_TINT
+        GlassLevel.BACK_GESTURE_TINT -> PrefKeys.BACK_GESTURE_TINT
         GlassLevel.BUTTON_TINT -> PrefKeys.BUTTON_TINT
         GlassLevel.STATUS_BAR_CHIP_TINT -> PrefKeys.STATUS_BAR_CHIP_TINT
         GlassLevel.TRANSITION_TINT -> PrefKeys.TRANSITION_TINT
@@ -121,6 +123,7 @@ object GlassPrefMapper {
         GlassLevel.DIALOG_ACCENT_TINT -> PrefKeys.DEFAULT_DIALOG_ACCENT_TINT
         GlassLevel.DIALOG_ACTIVE_TINT -> PrefKeys.DEFAULT_DIALOG_ACTIVE_TINT
         GlassLevel.TOAST_TINT -> PrefKeys.DEFAULT_TOAST_TINT
+        GlassLevel.BACK_GESTURE_TINT -> PrefKeys.DEFAULT_BACK_GESTURE_TINT
         GlassLevel.BUTTON_TINT -> PrefKeys.DEFAULT_BUTTON_TINT
         GlassLevel.STATUS_BAR_CHIP_TINT -> PrefKeys.DEFAULT_STATUS_BAR_CHIP_TINT
         GlassLevel.TRANSITION_TINT -> PrefKeys.DEFAULT_TRANSITION_TINT
@@ -161,6 +164,7 @@ object GlassPrefMapper {
         GlassSurface.VOLUME_PANEL -> PrefKeys.VOLUME_PANEL
         GlassSurface.DIALOGS -> PrefKeys.DIALOGS
         GlassSurface.TOASTS -> PrefKeys.TOASTS
+        GlassSurface.BACK_GESTURE -> PrefKeys.BACK_GESTURE
         GlassSurface.STATUS_BAR_CHIPS -> PrefKeys.STATUS_BAR_CHIPS
         GlassSurface.TRANSITIONS -> PrefKeys.TRANSITIONS
         GlassSurface.SETTINGS_CARDS -> PrefKeys.SETTINGS_CARDS

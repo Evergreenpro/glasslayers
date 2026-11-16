@@ -41,6 +41,7 @@ internal fun levelLabel(level: GlassLevel): Int = when (level) {
     GlassLevel.DIALOG_ACCENT_TINT -> R.string.level_power_menu_accent_tint
     GlassLevel.DIALOG_ACTIVE_TINT -> R.string.level_active_item_tint
     GlassLevel.TOAST_TINT -> R.string.level_toast_tint
+    GlassLevel.BACK_GESTURE_TINT -> R.string.level_back_gesture_tint
     GlassLevel.BUTTON_TINT -> R.string.level_button_tint
     GlassLevel.STATUS_BAR_CHIP_TINT -> R.string.level_chip_tint
     GlassLevel.TRANSITION_TINT -> R.string.level_transition_tint

@@ -176,6 +176,15 @@ enum class GlassPage(
         listOf(GlassLevel.BUTTON_TINT),
         options = listOf(GlassToggle.BUTTON_PRESS)
     ),
+    BACK_GESTURE(
+        R.string.mod_back_gesture,
+        R.string.page_back_gesture_title,
+        R.string.mod_back_gesture_summary,
+        GlassToggle.BACK_GESTURE,
+        GlassSurface.BACK_GESTURE,
+        true,
+        listOf(GlassLevel.BACK_GESTURE_TINT)
+    ),
     TOASTS(
         R.string.mod_toasts,
         R.string.page_toasts_title,

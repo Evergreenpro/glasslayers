@@ -50,6 +50,7 @@ object NotificationGlass {
     private val FOOTER_BUTTON_FIELDS = listOf("mClearAllButton", "mHistoryButton", "mSettingsButton")
 
     private val footerViews = Collections.newSetFromMap(WeakHashMap<Any, Boolean>())
+    private val backgroundViews = Collections.newSetFromMap(WeakHashMap<View, Boolean>())
     private val mainHandler = Handler(Looper.getMainLooper())
     private val tintPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val tintPath = Path()
@@ -59,8 +60,11 @@ object NotificationGlass {
         var hooks = 0
         hooks += HookEnv.findClass(BACKGROUND_VIEW).hookAllBefore("onDraw") { chain ->
             val canvas = chain.args.firstOrNull() as? Canvas ?: return@hookAllBefore
-            drawNotificationGlass(chain.thisObject as View, canvas)
+            val view = chain.thisObject as View
+            backgroundViews.add(view)
+            drawNotificationGlass(view, canvas)
         }
+        DozeTracker.addListener(::redrawRows)
 
         hooks += HookEnv.findClass(HEADER_VIEW).hookAllBefore("onDraw") { chain ->
             val header = chain.thisObject
@@ -103,7 +107,16 @@ object NotificationGlass {
         return hooks
     }
 
-    fun refresh() = refreshFooterGlass()
+    fun refresh() {
+        refreshFooterGlass()
+        redrawRows()
+    }
+
+    private fun redrawRows() {
+        mainHandler.post {
+            backgroundViews.toList().forEach { if (it.isAttachedToWindow) it.invalidate() }
+        }
+    }
 
     private fun rowSurface(pinned: Boolean, onKeyguard: Boolean): String = when {
         pinned -> PrefKeys.HEADS_UP

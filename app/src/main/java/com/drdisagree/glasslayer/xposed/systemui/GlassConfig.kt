@@ -135,6 +135,8 @@ object GlassConfig {
     var toasts = PrefKeys.DEFAULT_MODULE
         private set
     var toastTint = PrefKeys.DEFAULT_TOAST_TINT / 100f
+    var backGesture = PrefKeys.DEFAULT_MODULE
+    var backGestureTint = PrefKeys.DEFAULT_BACK_GESTURE_TINT / 100f
         private set
     var statusBarChips = PrefKeys.DEFAULT_MODULE
         private set
@@ -219,6 +221,9 @@ object GlassConfig {
 
     val toastsActive: Boolean
         get() = isActive && toasts
+
+    val backGestureActive: Boolean
+        get() = isActive && backGesture
 
     val statusBarChipsActive: Boolean
         get() = isActive && statusBarChips
@@ -327,6 +332,8 @@ object GlassConfig {
         dialogActiveTint = percent(PrefKeys.DIALOG_ACTIVE_TINT, PrefKeys.DEFAULT_DIALOG_ACTIVE_TINT)
         toasts = ModulePrefs.boolean(PrefKeys.TOASTS, PrefKeys.DEFAULT_MODULE)
         toastTint = percent(PrefKeys.TOAST_TINT, PrefKeys.DEFAULT_TOAST_TINT)
+        backGesture = ModulePrefs.boolean(PrefKeys.BACK_GESTURE, PrefKeys.DEFAULT_MODULE)
+        backGestureTint = percent(PrefKeys.BACK_GESTURE_TINT, PrefKeys.DEFAULT_BACK_GESTURE_TINT)
         statusBarChips = ModulePrefs.boolean(PrefKeys.STATUS_BAR_CHIPS, PrefKeys.DEFAULT_MODULE)
         statusBarChipTint = percent(PrefKeys.STATUS_BAR_CHIP_TINT, PrefKeys.DEFAULT_STATUS_BAR_CHIP_TINT)
         transitions = ModulePrefs.boolean(PrefKeys.TRANSITIONS, PrefKeys.DEFAULT_MODULE)

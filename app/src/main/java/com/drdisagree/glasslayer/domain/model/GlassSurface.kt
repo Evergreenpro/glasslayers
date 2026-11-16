@@ -18,6 +18,7 @@ enum class GlassSurface {
     VOLUME_PANEL,
     DIALOGS,
     TOASTS,
+    BACK_GESTURE,
     STATUS_BAR_CHIPS,
     TRANSITIONS,
     SETTINGS_CARDS,

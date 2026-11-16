@@ -25,6 +25,7 @@ internal fun modLabel(name: String): Int? = when (name) {
     "VolumePanelGlass" -> R.string.page_volume_panel_title
     "DialogGlass" -> R.string.page_dialogs_title
     "ToastGlass" -> R.string.page_toasts_title
+    "BackGestureGlass" -> R.string.page_back_gesture_title
     "ButtonGlass" -> R.string.page_buttons_title
     "StatusBarChipGlass" -> R.string.page_status_bar_chips_title
     "TransitionGlass" -> R.string.page_transitions_title

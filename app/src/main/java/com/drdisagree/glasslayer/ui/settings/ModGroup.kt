@@ -26,6 +26,11 @@ enum class ModGroup(@param:StringRes val title: Int, @param:DrawableRes val icon
         R.drawable.ic_section_dialogs,
         listOf(GlassPage.DIALOGS, GlassPage.POWER_MENU, GlassPage.TRANSITIONS)
     ),
+    NAVIGATION(
+        R.string.group_navigation,
+        R.drawable.ic_section_navigation,
+        listOf(GlassPage.BACK_GESTURE)
+    ),
     CONTROLS(
         R.string.group_controls,
         R.drawable.ic_section_controls,

@@ -47,6 +47,7 @@
     <string name="group_volume">Volume</string>
     <string name="group_dialogs">Dialogs and menus</string>
     <string name="group_controls">Controls</string>
+    <string name="group_navigation">Navigation</string>
 
     <string name="section_tint">Tint</string>
     <string name="section_glass">Glass</string>
@@ -148,6 +149,10 @@
     <string name="mod_dialogs_summary">Glass system dialogs and buttons</string>
     <string name="page_dialogs_title">System dialogs</string>
     <string name="mod_toasts">Toasts</string>
+    <string name="mod_back_gesture">Back gesture</string>
+    <string name="mod_back_gesture_summary">Glass back arrow pill</string>
+    <string name="page_back_gesture_title">Back gesture indicator</string>
+    <string name="level_back_gesture_tint">Indicator tint</string>
     <string name="mod_toasts_summary">Glass toast messages</string>
     <string name="page_toasts_title">Toasts</string>
     <string name="mod_status_bar_chips">Status bar chips</string>
