@@ -165,7 +165,7 @@ object PrefKeys {
     const val DEFAULT_SETTINGS_ICON_TINT = 75f
     const val DEFAULT_SETTINGS_ACCENT_TINT = 85f
     const val DEFAULT_INSTALLER_DIALOG_TINT = 65f
-    const val DEFAULT_KEYBOARD_TINT = 60f
+    const val DEFAULT_KEYBOARD_TINT = 85f
     const val DEFAULT_KEYBOARD_KEY_TINT = 45f
     const val DEFAULT_KEYBOARD_ACCENT_TINT = 80f
 }
