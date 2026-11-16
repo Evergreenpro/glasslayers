@@ -139,7 +139,8 @@ object NotificationGlass {
         }
         val surface = GlassConfig.surface(surfaceKey)
         val actualWidth = (view.field("mActualWidth") as? Int)?.takeIf { it >= 0 }?.coerceAtMost(view.width) ?: view.width
-        val expandedGroup = row?.call("isSummaryWithChildren") == true && row.call("isGroupExpanded") == true
+        val expandedGroup = row?.call("isSummaryWithChildren") == true &&
+                (row.field("mShowNoBackground") as? Boolean ?: (row.call("isGroupExpanded") == true))
         val stockHidden = drawableAlpha == 0 || actualWidth == 0
         val enabled = (if (pinned) GlassConfig.headsUpActive else GlassConfig.notificationsActive) &&
                 (!onKeyguard || GlassConfig.lockscreenNotificationsActive) &&
