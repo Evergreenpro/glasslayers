@@ -15,6 +15,7 @@ import com.drdisagree.glasslayer.xposed.hook.call
 import com.drdisagree.glasslayer.xposed.hook.field
 import com.drdisagree.glasslayer.xposed.hook.hookAll
 import com.drdisagree.glasslayer.xposed.hook.hookAllAfter
+import com.drdisagree.glasslayer.xposed.hook.hookAllBefore
 import com.drdisagree.glasslayer.xposed.hook.proceedWithArgs
 import java.lang.ref.WeakReference
 import java.lang.reflect.Method
@@ -28,6 +29,7 @@ import kotlin.math.sqrt
 object QsOpenMotion {
 
     private const val PANEL_CONTROLLER = "${SystemUiModule.PACKAGE}.shade.NotificationPanelViewController"
+    private const val TRANSITION_LAYOUT = "${SystemUiModule.PACKAGE}.util.animation.TransitionLayout"
     private const val GRAPHICS_LAYER_KT = "androidx.compose.ui.graphics.GraphicsLayerModifierKt"
     private const val INT_STATE_CLASS = "androidx.compose.runtime.ParcelableSnapshotMutableIntState"
     private const val FUNCTION1_CLASS = "kotlin.jvm.functions.Function1"
@@ -88,6 +90,7 @@ object QsOpenMotion {
     private var stack: WeakReference<ViewGroup>? = null
     private val stackMatrices = WeakHashMap<View, Matrix>()
     private val movedViews = Collections.newSetFromMap(WeakHashMap<View, Boolean>())
+    private val mediaViews = Collections.newSetFromMap(WeakHashMap<View, Boolean>())
     private val location = IntArray(2)
 
     private val frameCallback = Choreographer.FrameCallback { nanos -> Guard.run(FRAME_TAG, Unit) { onFrame(nanos) } }
@@ -97,6 +100,9 @@ object QsOpenMotion {
             onExpansion(chain.thisObject)
         }
         if (hooks == 0) return 0
+        hooks += HookEnv.findClass(TRANSITION_LAYOUT).hookAllBefore("dispatchDraw") { chain ->
+            (chain.thisObject as? View)?.let { mediaViews += it }
+        }
         blocks.forEach { (className, name) ->
             hooks += HookEnv.findClass(className).hookAll(name) { chain ->
                 chain.proceedWithArgs { args -> wrap(chain.executable as Method, args) }
@@ -224,23 +230,26 @@ object QsOpenMotion {
     }
 
     private fun applyStack() {
-        val group = stack?.get() ?: return
-        for (index in 0 until group.childCount) {
-            val child = group.getChildAt(index)
-            if (child.width <= 0 || child.height <= 0) continue
-            child.getLocationOnScreen(location)
-            val centerX = location[0] + child.width / 2f
-            val centerY = location[1] + child.height / 2f
-            val progress = progressAt(centerX, centerY)
-            val rest = 1f - progress
-            val scale = scaleOf(progress)
-            val matrix = stackMatrices.getOrPut(child) { Matrix() }
-            matrix.setScale(scale, scale, child.width / 2f, child.height / 2f)
-            matrix.postTranslate(offsetX(centerX, centerY, rest), offsetY(centerY, rest))
-            child.animationMatrix = matrix
-            child.transitionAlpha = alphaOf(progress)
-            movedViews += child
+        stack?.get()?.let { group ->
+            for (index in 0 until group.childCount) moveView(group.getChildAt(index))
         }
+        mediaViews.forEach { if (it.isAttachedToWindow && it.isShown) moveView(it) }
+    }
+
+    private fun moveView(view: View) {
+        if (view.width <= 0 || view.height <= 0) return
+        view.getLocationOnScreen(location)
+        val centerX = location[0] + view.width / 2f
+        val centerY = location[1] + view.height / 2f
+        val progress = progressAt(centerX, centerY)
+        val rest = 1f - progress
+        val scale = scaleOf(progress)
+        val matrix = stackMatrices.getOrPut(view) { Matrix() }
+        matrix.setScale(scale, scale, view.width / 2f, view.height / 2f)
+        matrix.postTranslate(offsetX(centerX, centerY, rest), offsetY(centerY, rest))
+        view.animationMatrix = matrix
+        view.transitionAlpha = alphaOf(progress)
+        movedViews += view
     }
 
     private fun resetStack() {
