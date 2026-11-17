@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.graphics.Matrix
 import android.os.SystemClock
 import android.view.Choreographer
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.drdisagree.glasslayer.xposed.compose.ComposeModifiers
@@ -18,6 +19,7 @@ import com.drdisagree.glasslayer.xposed.hook.hookAllAfter
 import com.drdisagree.glasslayer.xposed.hook.hookAllBefore
 import com.drdisagree.glasslayer.xposed.hook.proceedWithArgs
 import java.lang.ref.WeakReference
+import java.lang.reflect.Proxy
 import java.lang.reflect.Method
 import java.util.Collections
 import java.util.WeakHashMap
@@ -28,7 +30,17 @@ import kotlin.math.sqrt
 
 object QsOpenMotion {
 
-    private const val PANEL_CONTROLLER = "${SystemUiModule.PACKAGE}.shade.NotificationPanelViewController"
+    private const val EXPANSION_MANAGER = "${SystemUiModule.PACKAGE}.shade.ShadeExpansionStateManager"
+    private const val EXPANSION_LISTENER = "${SystemUiModule.PACKAGE}.shade.ShadeExpansionListener"
+    private const val BAR_STATE_CONTROLLER = "${SystemUiModule.PACKAGE}.statusbar.StatusBarStateControllerImpl"
+    private const val STACK_LAYOUT = "${SystemUiModule.PACKAGE}.statusbar.notification.stack.NotificationStackScrollLayout"
+    private const val PANEL_VIEW = "${SystemUiModule.PACKAGE}.shade.NotificationPanelView"
+    private const val ADD_LISTENER = "addExpansionListener"
+    private const val ON_EXPANSION = "onPanelExpansionChanged"
+    private val touchSources = listOf(
+        "${SystemUiModule.PACKAGE}.shade.NotificationPanelViewController",
+        "${SystemUiModule.PACKAGE}.shade.ShadeSurfaceImpl"
+    )
     private const val TRANSITION_LAYOUT = "${SystemUiModule.PACKAGE}.util.animation.TransitionLayout"
     private const val GRAPHICS_LAYER_KT = "androidx.compose.ui.graphics.GraphicsLayerModifierKt"
     private const val INT_STATE_CLASS = "androidx.compose.runtime.ParcelableSnapshotMutableIntState"
@@ -88,6 +100,8 @@ object QsOpenMotion {
     private var frameCount = 0
 
     private var stack: WeakReference<ViewGroup>? = null
+    private var barState: WeakReference<Any>? = null
+    private var listenerAdded = false
     private val stackMatrices = WeakHashMap<View, Matrix>()
     private val movedViews = Collections.newSetFromMap(WeakHashMap<View, Boolean>())
     private val mediaViews = Collections.newSetFromMap(WeakHashMap<View, Boolean>())
@@ -96,10 +110,22 @@ object QsOpenMotion {
     private val frameCallback = Choreographer.FrameCallback { nanos -> Guard.run(FRAME_TAG, Unit) { onFrame(nanos) } }
 
     fun install(): Int {
-        var hooks = HookEnv.findClass(PANEL_CONTROLLER).hookAllAfter("setExpandedHeightInternal") { chain, _ ->
-            onExpansion(chain.thisObject)
+        val listenerClass = HookEnv.findClass(EXPANSION_LISTENER) ?: return 0
+        var hooks = HookEnv.findClass(EXPANSION_MANAGER).hookAllAfter(ADD_LISTENER) { chain, _ ->
+            addListener(chain.thisObject, listenerClass)
         }
         if (hooks == 0) return 0
+        touchSources.forEach { className ->
+            hooks += HookEnv.findClass(className).hookAllBefore("handleExternalTouch") { chain -> recordTouch(chain.args.firstOrNull()) }
+        }
+        hooks += HookEnv.findClass(PANEL_VIEW).hookAllBefore("dispatchTouchEvent") { chain -> recordTouch(chain.args.firstOrNull()) }
+        hooks += HookEnv.findClass(BAR_STATE_CONTROLLER).hookAllAfter("addCallback") { chain, _ ->
+            if (barState?.get() == null) chain.thisObject?.let { barState = WeakReference(it) }
+        }
+        hooks += HookEnv.findClass(STACK_LAYOUT).hookAllBefore("onLayout") { chain ->
+            val layout = chain.thisObject as? ViewGroup ?: return@hookAllBefore
+            if (stack?.get() !== layout) stack = WeakReference(layout)
+        }
         hooks += HookEnv.findClass(TRANSITION_LAYOUT).hookAllBefore("dispatchDraw") { chain ->
             (chain.thisObject as? View)?.let { mediaViews += it }
         }
@@ -116,18 +142,32 @@ object QsOpenMotion {
         bump()
     }
 
-    private fun onExpansion(controller: Any?) {
-        val fraction = controller.field("mExpandedFraction") as? Float ?: return
-        val state = controller.field("mBarState") as? Int ?: SHADE
+    private fun addListener(manager: Any?, listenerClass: Class<*>) {
+        if (listenerAdded || manager == null) return
+        listenerAdded = true
+        val listener = Proxy.newProxyInstance(listenerClass.classLoader, arrayOf(listenerClass)) { proxy, method, args ->
+            when (method.name) {
+                ON_EXPANSION -> Guard.run(EXPANSION_TAG, Unit) { onExpansion(args?.firstOrNull()) }
+                "equals" -> proxy === args?.firstOrNull()
+                "hashCode" -> System.identityHashCode(proxy)
+                "toString" -> LISTENER_NAME
+                else -> null
+            }
+        }
+        manager.call(ADD_LISTENER, listener)
+    }
+
+    private fun recordTouch(event: Any?) {
+        val motion = event as? MotionEvent ?: return
+        if (motion.actionMasked == MotionEvent.ACTION_DOWN) touchX = motion.rawX
+    }
+
+    private fun onExpansion(event: Any?) {
+        val fraction = event.field("fraction") as? Float ?: return
+        val state = barState?.get()?.call("getState") as? Int ?: SHADE
         if (!GlassConfig.qsMotionActive || state != SHADE) {
             if (value != 1f || running) snapToRest()
             return
-        }
-        (controller.field("mInitialExpandX") as? Float)?.let { touchX = it }
-        if (stack?.get() == null) {
-            (controller.field("mNotificationStackScrollLayoutController").field("mView") as? ViewGroup)?.let {
-                stack = WeakReference(it)
-            }
         }
         target = fraction.coerceIn(0f, 1f)
         if (!running && abs(value - target) > EPSILON) start()
@@ -310,6 +350,8 @@ object QsOpenMotion {
 }
 
 private const val FRAME_TAG = "QsOpenMotion.frame"
+private const val EXPANSION_TAG = "QsOpenMotion.expansion"
+private const val LISTENER_NAME = "GlassLayerOpenMotion"
 private const val PROBE_TAG = "QsOpenMotion.probe"
 private const val LAYER_TAG = "QsOpenMotion.layer"
 private const val SAMPLES = 128
