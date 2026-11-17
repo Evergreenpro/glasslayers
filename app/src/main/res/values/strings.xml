@@ -139,6 +139,9 @@
     <string name="mod_switches">Switches</string>
     <string name="mod_switches_summary">Liquid glass toggles</string>
     <string name="page_switches_title">Switches</string>
+    <string name="mod_qs_motion">Open animation</string>
+    <string name="mod_qs_motion_summary">Panels flow in from your finger</string>
+    <string name="page_qs_motion_title">Quick settings open animation</string>
     <string name="mod_sliders">Sliders</string>
     <string name="mod_sliders_summary">Liquid glass slider thumbs</string>
     <string name="page_sliders_title">Sliders</string>

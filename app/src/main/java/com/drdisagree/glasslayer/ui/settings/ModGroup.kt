@@ -8,7 +8,7 @@ enum class ModGroup(@param:StringRes val title: Int, @param:DrawableRes val icon
     QUICK_SETTINGS(
         R.string.group_quick_settings,
         R.drawable.ic_section_quick_settings,
-        listOf(GlassPage.BACKGROUND, GlassPage.TILES, GlassPage.FOOTER, GlassPage.BRIGHTNESS, GlassPage.MEDIA)
+        listOf(GlassPage.BACKGROUND, GlassPage.TILES, GlassPage.FOOTER, GlassPage.BRIGHTNESS, GlassPage.MEDIA, GlassPage.QS_MOTION)
     ),
     NOTIFICATIONS(
         R.string.group_notifications,

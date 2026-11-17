@@ -69,6 +69,7 @@ object PrefKeys {
     const val TOASTS = "toasts"
     const val TOAST_TINT = "toast_tint"
     const val BACK_GESTURE = "back_gesture"
+    const val QS_MOTION = "qs_motion"
     const val BACK_GESTURE_TINT = "back_gesture_tint"
     const val BUTTONS = "buttons"
     const val BUTTON_TINT = "button_tint"

@@ -129,6 +129,15 @@ enum class GlassPage(
         true,
         listOf(GlassLevel.POWER_MENU_TINT, GlassLevel.POWER_MENU_BUTTON_TINT, GlassLevel.POWER_MENU_ACCENT_TINT)
     ),
+    QS_MOTION(
+        R.string.mod_qs_motion,
+        R.string.page_qs_motion_title,
+        R.string.mod_qs_motion_summary,
+        GlassToggle.QS_MOTION,
+        null,
+        false,
+        emptyList()
+    ),
     SWITCHES(
         R.string.mod_switches,
         R.string.page_switches_title,

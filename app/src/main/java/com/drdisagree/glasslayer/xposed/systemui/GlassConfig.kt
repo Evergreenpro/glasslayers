@@ -102,6 +102,8 @@ object GlassConfig {
         private set
     var sliders = PrefKeys.DEFAULT_MODULE
         private set
+    var qsMotion = PrefKeys.DEFAULT_MODULE
+        private set
     var sliderTint = PrefKeys.DEFAULT_SLIDER_TINT / 100f
         private set
     var activeSliderTint = PrefKeys.DEFAULT_ACTIVE_SLIDER_TINT / 100f
@@ -214,6 +216,9 @@ object GlassConfig {
     val slidersActive: Boolean
         get() = enabled && sliders
 
+    val qsMotionActive: Boolean
+        get() = enabled && qsMotion
+
     val buttonsActive: Boolean
         get() = enabled && buttons
 
@@ -322,6 +327,7 @@ object GlassConfig {
         ) ?: BatterySaverBackground.SEMI_TRANSPARENT
         switchTint = percent(PrefKeys.SWITCH_TINT, PrefKeys.DEFAULT_SWITCH_TINT)
         sliders = ModulePrefs.boolean(PrefKeys.SLIDERS, PrefKeys.DEFAULT_MODULE)
+        qsMotion = ModulePrefs.boolean(PrefKeys.QS_MOTION, PrefKeys.DEFAULT_MODULE)
         sliderTint = percent(PrefKeys.SLIDER_TINT, PrefKeys.DEFAULT_SLIDER_TINT)
         activeSliderTint = percent(PrefKeys.ACTIVE_SLIDER_TINT, PrefKeys.DEFAULT_ACTIVE_SLIDER_TINT)
         buttons = ModulePrefs.boolean(PrefKeys.BUTTONS, PrefKeys.DEFAULT_MODULE)

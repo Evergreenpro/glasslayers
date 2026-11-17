@@ -34,6 +34,7 @@ object GlassPrefMapper {
         GlassToggle.SETTINGS_CARDS -> PrefKeys.SETTINGS_CARDS
         GlassToggle.INSTALLER_DIALOGS -> PrefKeys.INSTALLER_DIALOGS
         GlassToggle.KEYBOARD -> PrefKeys.KEYBOARD
+        GlassToggle.QS_MOTION -> PrefKeys.QS_MOTION
         GlassToggle.SWITCH_PRESS -> PrefKeys.SWITCH_PRESS
         GlassToggle.BUTTON_PRESS -> PrefKeys.BUTTON_PRESS
     }
