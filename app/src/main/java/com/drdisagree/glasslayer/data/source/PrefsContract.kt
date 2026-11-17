@@ -7,6 +7,8 @@ object PrefsContract {
     const val METHOD_READ = "read"
     const val EXTRA_VALUES = "values"
     const val EXTRA_REMOVED = "removed"
+    const val ACTION_CHANGED = "com.drdisagree.glasslayer.action.PREFS_CHANGED"
+    const val PERMISSION = "com.drdisagree.glasslayer.permission.PREFS"
     private const val PATH_CHANGED = "changed"
 
     val BASE_URI: Uri = Uri.Builder().scheme("content").authority(AUTHORITY).build()

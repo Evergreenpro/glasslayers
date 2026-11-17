@@ -1,5 +1,7 @@
 package com.drdisagree.glasslayer.xposed.prefs
 
+import android.content.Context
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
@@ -25,6 +27,10 @@ object ModulePrefs {
     private val overrides = ConcurrentHashMap<String, Optional<Any>>()
     private val dispatched = HashMap<String, Optional<Any>>()
     private val observer = PrefsObserver(::onProviderChanged)
+    private val receiver = PrefsReceiver { intent ->
+        val snapshot = intent.extras
+        worker.execute { Guard.run(BROADCAST_TAG, Unit) { applySnapshot(snapshot) } }
+    }
     private var attachAttempts = 0
 
     private val changeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
@@ -71,6 +77,17 @@ object ModulePrefs {
         }
         try {
             context.contentResolver.registerContentObserver(PrefsContract.CHANGED_URI, true, observer)
+        } catch (_: SecurityException) {
+            listenForBroadcasts(context)
+        } catch (throwable: Throwable) {
+            HookEnv.log("Preference change channel unavailable", throwable)
+        }
+    }
+
+    private fun listenForBroadcasts(context: Context) {
+        try {
+            context.registerReceiver(receiver, IntentFilter(PrefsContract.ACTION_CHANGED), PrefsContract.PERMISSION, null, Context.RECEIVER_EXPORTED)
+            HookEnv.log("Preference changes arrive by broadcast here")
         } catch (throwable: Throwable) {
             HookEnv.log("Preference change channel unavailable", throwable)
         }
@@ -83,7 +100,11 @@ object ModulePrefs {
 
     private fun readProvider(key: String?) {
         val context = HostApplication.get() ?: return
-        val result = context.contentResolver.call(PrefsContract.BASE_URI, PrefsContract.METHOD_READ, key, null) ?: return
+        applySnapshot(context.contentResolver.call(PrefsContract.BASE_URI, PrefsContract.METHOD_READ, key, null))
+    }
+
+    private fun applySnapshot(result: Bundle?) {
+        result ?: return
         val values = result.getBundle(PrefsContract.EXTRA_VALUES) ?: Bundle.EMPTY
         val changed = ArrayList<String>()
         values.keySet().forEach { name -> if (applyOverride(name, Optional.ofNullable(values.valueOf(name)))) changed += name }
@@ -139,6 +160,7 @@ private const val TAG = "ModulePrefs.listener"
 private const val REMOTE_TAG = "ModulePrefs.remote"
 private const val PROVIDER_TAG = "ModulePrefs.provider"
 private const val ATTACH_TAG = "ModulePrefs.attach"
+private const val BROADCAST_TAG = "ModulePrefs.broadcast"
 private const val WORKER_NAME = "GlassLayerPrefs"
 private const val ATTACH_ATTEMPTS = 40
 private const val ATTACH_DELAY_MS = 250L
