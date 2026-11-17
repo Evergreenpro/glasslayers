@@ -33,6 +33,7 @@ object KeyboardGlass {
     private const val BAR_SPAN = 0.6f
     private const val OPAQUE = 255
     private const val SAMPLE_SIZE = 64
+    private const val MAX_KEY_INSET_DP = 32f
 
     private val windows = Collections.newSetFromMap(WeakHashMap<View, Boolean>())
     private val panels = Collections.newSetFromMap(WeakHashMap<View, Boolean>())
@@ -41,6 +42,7 @@ object KeyboardGlass {
     private val panelColors = WeakHashMap<View, Int>()
     private val layerColors = WeakHashMap<View, Int>()
     private val blurs = WeakHashMap<View, Drawable>()
+    private val lastRadii = WeakHashMap<View, Float>()
     private val stockRadii = WeakHashMap<GradientDrawable, FloatArray>()
     private val stockClips = WeakHashMap<ViewGroup, Boolean>()
     private val stockPaddingClips = WeakHashMap<ViewGroup, Boolean>()
@@ -208,17 +210,21 @@ object KeyboardGlass {
 
     private fun topRadius(panel: View): Float {
         panel.getLocationInWindow(panelLocation)
+        val maxInset = MAX_KEY_INSET_DP * panel.resources.displayMetrics.density
         var best = Float.NaN
         keys.forEach { key ->
             if (!key.isShown) return@forEach
             val shape = SolidShapes.of(key.background) ?: return@forEach
             key.getLocationInWindow(keyLocation)
-            val inset = keyLocation[0] - panelLocation[0] + shape.bounds.left
-            if (inset < 0) return@forEach
+            val left = keyLocation[0] - panelLocation[0]
+            val inset = minOf(left + shape.bounds.left, panel.width - left - shape.bounds.right)
+            if (inset < 0 || inset > maxInset) return@forEach
             val radius = shape.cornerRadius + inset
             if (best.isNaN() || radius < best) best = radius
         }
-        return if (best.isNaN()) 0f else best
+        if (best.isNaN()) return lastRadii[panel] ?: 0f
+        lastRadii[panel] = best
+        return best
     }
 
     private fun blurOf(panel: View): Drawable? {
