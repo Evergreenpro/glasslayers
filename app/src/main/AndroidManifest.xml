@@ -4,6 +4,10 @@
 
     <queries>
         <package android:name="com.android.systemui" />
+        <package android:name="com.android.settings" />
+        <package android:name="com.google.android.packageinstaller" />
+        <package android:name="com.android.packageinstaller" />
+        <package android:name="com.google.android.inputmethod.latin" />
     </queries>
 
     <application
@@ -44,6 +48,12 @@
                 android:name="android.service.quicksettings.TOGGLEABLE_TILE"
                 android:value="true" />
         </service>
+
+        <provider
+            android:name=".data.source.PrefsProvider"
+            android:authorities="com.drdisagree.glasslayer.prefs"
+            android:exported="true"
+            tools:ignore="ExportedContentProvider" />
 
         <receiver
             android:name=".data.source.HookReportReceiver"

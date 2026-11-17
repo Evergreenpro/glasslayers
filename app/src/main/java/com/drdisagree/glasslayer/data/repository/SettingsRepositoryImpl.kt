@@ -1,6 +1,7 @@
 package com.drdisagree.glasslayer.data.repository
 
 import com.drdisagree.glasslayer.data.mapper.GlassPrefMapper
+import com.drdisagree.glasslayer.data.mapper.SyncedPrefKeys
 import com.drdisagree.glasslayer.data.source.LocalPrefsSource
 import com.drdisagree.glasslayer.data.source.PrefKeys
 import com.drdisagree.glasslayer.data.source.XposedServiceSource
@@ -25,24 +26,11 @@ class SettingsRepositoryImpl(
     private val xposed: XposedServiceSource
 ) : SettingsRepository {
 
-    private val keys: Set<String> = buildSet {
-        GlassToggle.entries.forEach { add(GlassPrefMapper.key(it)) }
-        GlassLevel.entries.forEach { add(GlassPrefMapper.key(it)) }
-        add(PrefKeys.PERFORMANCE_MODE)
-        add(PrefKeys.BATTERY_SAVER_ACTION)
-        add(PrefKeys.THERMAL_ACTION)
-        add(PrefKeys.BATTERY_SAVER_BACKGROUND)
-        StyleParam.entries.forEach { param ->
-            add(GlassPrefMapper.key(param))
-            GlassSurface.entries.forEach { add(GlassPrefMapper.key(it, param)) }
-        }
-    }
-
     init {
         xposed.addBindListener(::pushAll)
     }
 
-    override val settings: Flow<GlassSettings> = local.changes { it in keys }
+    override val settings: Flow<GlassSettings> = local.changes { it in SyncedPrefKeys.all }
         .map { read() }
         .flowOn(Dispatchers.IO)
 
