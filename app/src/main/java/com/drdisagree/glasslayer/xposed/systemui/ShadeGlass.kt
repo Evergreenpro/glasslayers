@@ -29,6 +29,8 @@ object ShadeGlass {
     private const val SHADE_WINDOW_TITLE = "NotificationShade"
     private const val OPAQUE = 255
     private const val SEMI_TRANSPARENT_ALPHA = 0.85f
+    private const val SEMI_TRANSPARENT_PANEL_ALPHA = 0.92f
+    private const val SPLIT_SHADE_CONFIG = "config_use_split_notification_shade"
     private val GLASS_SCRIM_STATES = setOf("SHADE_LOCKED", "UNLOCKED")
 
     private val scrimAlphas = WeakHashMap<Any, Any>()
@@ -38,6 +40,8 @@ object ShadeGlass {
     private val mainHandler = Handler(Looper.getMainLooper())
     private var scrimController: WeakReference<Any>? = null
     private var scrimMethod: Method? = null
+    private var behindAlpha = 0f
+    private var splitShadeId: Int? = null
 
     fun install(): Int {
         var hooks = 0
@@ -54,11 +58,16 @@ object ShadeGlass {
                 val state = chain.thisObject.field("mState").toString()
                 if (state !in GLASS_SCRIM_STATES) return@proceedWithArgs
 
-                if (scrim === chain.thisObject.field("mScrimBehind") ||
-                    scrim === chain.thisObject.field("mNotificationsScrim")
-                ) {
+                val behind = scrim === chain.thisObject.field("mScrimBehind")
+                val notifications = scrim === chain.thisObject.field("mNotificationsScrim")
+                if (behind || notifications) {
                     args[colorIndex] = ColorUtils.setAlphaComponent(color, OPAQUE)
-                    args[alphaIndex] = scrimAlpha(scrim, alpha)
+                    var applied = scrimAlpha(scrim, alpha)
+                    if (behind) behindAlpha = applied
+                    if (notifications && stacksOverBehind(scrim as View)) {
+                        applied = alphaOver(expansionOf(scrim, alpha) * SEMI_TRANSPARENT_PANEL_ALPHA, behindAlpha)
+                    }
+                    args[alphaIndex] = applied
                 }
             }
         }
@@ -120,6 +129,20 @@ object ShadeGlass {
             return alpha * GlassConfig.backgroundDim
         }
         return expansionOf(scrim, alpha) * SEMI_TRANSPARENT_ALPHA
+    }
+
+    private fun stacksOverBehind(scrim: View): Boolean =
+        !WindowBlurState.enabled &&
+                GlassConfig.batterySaverBackground == BatterySaverBackground.SEMI_TRANSPARENT &&
+                !isSplitShade(scrim)
+
+    private fun alphaOver(target: Float, below: Float): Float =
+        if (below >= 1f) 0f else ((target - below) / (1f - below)).coerceIn(0f, 1f)
+
+    private fun isSplitShade(view: View): Boolean {
+        val resources = view.resources
+        val id = splitShadeId ?: resources.getIdentifier(SPLIT_SHADE_CONFIG, "bool", SystemUiModule.PACKAGE).also { splitShadeId = it }
+        return id != 0 && resources.getBoolean(id)
     }
 
     private fun expansionOf(scrim: Any, alpha: Float): Float {
