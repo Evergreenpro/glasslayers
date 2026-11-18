@@ -35,7 +35,6 @@ object LockscreenShortcutGlass {
     private val mainHandler = Handler(Looper.getMainLooper())
 
     private var shortcutDepth = 0
-    private var shortcutShape: Any? = null
 
     fun install(): Int {
         var hooks = 0
@@ -65,11 +64,7 @@ object LockscreenShortcutGlass {
         hooks += HookEnv.findClass(EXPANDABLE_KT).hookMatching(Regex("Expandable(-.*)?")) { chain ->
             val isShortcut = shortcutDepth > 0 || chain.args.any { it != null && it in shortcutControllers }
             if (!isShortcut) return@hookMatching chain.proceed()
-            chain.proceedWithArgs { args ->
-                val method = chain.executable as Method
-                applyShortcutColor(method, args)
-                applyComposeGlass(method, args)
-            }
+            chain.proceedWithArgs { args -> applyShortcutColor(chain.executable as Method, args) }
         }
 
         hooks += HookEnv.findClass(BACKGROUND_KT).hookMatching(Regex("background-.*")) { chain ->
@@ -81,7 +76,10 @@ object LockscreenShortcutGlass {
                 return@hookMatching chain.proceed()
             }
             if (shortcutDepth <= 0 && !calledFromShortcut()) return@hookMatching chain.proceed()
-            chain.proceedWithArgs { values -> values[1] = tinted(values[1] as Long) }
+            chain.proceedWithArgs { values ->
+                values[1] = tinted(values[1] as Long)
+                values[0]?.let { receiver -> applyComposeGlass(receiver, circle)?.let { values[0] = it } }
+            }
         }
 
         DozeTracker.addListener(::refresh)
@@ -110,31 +108,17 @@ object LockscreenShortcutGlass {
     }
 
     private fun applyShortcutColor(method: Method, args: Array<Any?>) {
-        val types = method.parameterTypes
-        val shapeIndex = types.indexOfFirst { it.name == ComposeToolkit.SHAPE_CLASS }
-        if (shapeIndex != -1) args[shapeIndex]?.let { shortcutShape = it }
-        if (types.firstOrNull() != Long::class.javaPrimitiveType) return
+        if (method.parameterTypes.firstOrNull() != Long::class.javaPrimitiveType) return
         if (!GlassConfig.lockscreenShortcutsEnabled) return
         val color = args[0] as? Long ?: return
         args[0] = tinted(color)
     }
 
-    private fun applyComposeGlass(method: Method, args: Array<Any?>) {
-        val modifierIndex = method.parameterTypes.indexOfFirst { it.name == ComposeToolkit.MODIFIER_CLASS }
-        if (modifierIndex == -1) return
-        val passed = args[modifierIndex]
-        val original = passed?.let { modifierToOriginal[it] ?: it } ?: ComposeToolkit.emptyModifier ?: return
-        args[modifierIndex] = passed?.let { original }
-        if (!GlassConfig.lockscreenShortcutsEnabled) return
-        val shape = shortcutShape ?: return
-
+    private fun applyComposeGlass(receiver: Any, shape: Any): Any? {
+        val original = modifierToOriginal[receiver] ?: receiver
         val drawer = ComposeModifiers.proxy("LockscreenShortcutGlass.draw") { drawScope -> drawComposeGlass(drawScope, shape) }
-            ?: return
-        ComposeModifiers.drawBehind(original, drawer)?.let {
-            modifierToOriginal[it] = original
-            args[modifierIndex] = it
-            if (passed == null) ComposeToolkit.clearDefaultBit(method, args, modifierIndex)
-        }
+            ?: return null
+        return ComposeModifiers.drawBehind(original, drawer)?.also { modifierToOriginal[it] = original }
     }
 
     private fun drawComposeGlass(drawScope: Any, shape: Any) {

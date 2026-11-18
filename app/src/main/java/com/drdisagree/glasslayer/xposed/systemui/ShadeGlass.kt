@@ -13,9 +13,11 @@ import com.drdisagree.glasslayer.xposed.hook.HookEnv
 import com.drdisagree.glasslayer.xposed.hook.call
 import com.drdisagree.glasslayer.xposed.hook.field
 import com.drdisagree.glasslayer.xposed.hook.hookAll
+import com.drdisagree.glasslayer.xposed.hook.hookMatching
 import com.drdisagree.glasslayer.xposed.hook.proceedWithArgs
 import java.lang.ref.WeakReference
 import java.lang.reflect.Method
+import java.util.Collections
 import java.util.WeakHashMap
 import kotlin.math.roundToInt
 
@@ -26,6 +28,8 @@ object ShadeGlass {
     private const val ANIMATED_BACKGROUND_CLASS = "com.android.compose.modifiers.AnimatedBackgroundKt"
     private const val NOTIFICATIONS_COMPOSABLE_CLASS =
         "${SystemUiModule.PACKAGE}.notifications.ui.composable.NotificationsKt"
+    private const val PANEL_SCRIM_KT = "${SystemUiModule.PACKAGE}.shade.ui.composable.ShadePanelScrimKt"
+    private const val BACKGROUND_KT = "androidx.compose.foundation.BackgroundKt"
     private const val SHADE_WINDOW_TITLE = "NotificationShade"
     private const val OPAQUE = 255
     private const val SEMI_TRANSPARENT_ALPHA = 0.85f
@@ -42,6 +46,9 @@ object ShadeGlass {
     private var scrimMethod: Method? = null
     private var behindAlpha = 0f
     private var splitShadeId: Int? = null
+    private var panelDepth = 0
+    private var panelScrimSeen = false
+    private val panelScopes = Collections.newSetFromMap(WeakHashMap<Any, Boolean>())
 
     fun install(): Int {
         var hooks = 0
@@ -85,10 +92,27 @@ object ShadeGlass {
                         fallback = { ComposeToolkit.invokeFunction(alpha) ?: 1f }
                     ) {
                         val value = ComposeToolkit.invokeFunction(alpha) as? Float ?: 1f
-                        if (GlassConfig.shadeBackgroundActive && !usesStockScrim()) scrimAlpha(alpha, value) else value
+                        if (GlassConfig.shadeBackgroundActive && !usesStockScrim()) notificationAlpha(alpha, value) else value
                     } ?: return@proceedWithArgs
                 }
             }
+        }
+
+        hooks += HookEnv.findClass(PANEL_SCRIM_KT).hookAll("ShadePanelScrim") { chain ->
+            captureScope(chain.executable as Method, chain.args, panelScopes)
+            panelScrimSeen = true
+            panelDepth++
+            try {
+                chain.proceed()
+            } finally {
+                panelDepth--
+            }
+        }
+
+        hooks += HookEnv.findClass(BACKGROUND_KT).hookMatching(Regex("background-.*")) { chain ->
+            if (panelDepth <= 0 || chain.args.size < 2 || chain.args[1] !is Long) return@hookMatching chain.proceed()
+            if (!GlassConfig.shadeBackgroundActive || usesStockScrim()) return@hookMatching chain.proceed()
+            chain.proceedWithArgs { args -> args[1] = panelColor(args[1] as Long) }
         }
 
         hooks += HookEnv.findClass(BLUR_UTILS).hookAll("applyBlur") { chain ->
@@ -108,6 +132,7 @@ object ShadeGlass {
 
     fun refresh() {
         mainHandler.post {
+            panelScopes.toList().forEach { it.call("invalidateForResult", null) }
             val controller = scrimController?.get() ?: return@post
             val method = scrimMethod ?: return@post
             lastScrimCalls.values.toList().forEach { args ->
@@ -119,6 +144,31 @@ object ShadeGlass {
     fun onBlurChanged() {
         peakScrimAlphas.clear()
         refresh()
+    }
+
+    private fun captureScope(method: Method, args: List<Any?>, scopes: MutableSet<Any>) {
+        val composerIndex = method.parameterTypes.indexOfFirst { it.name == ComposeToolkit.COMPOSER_CLASS }
+        args.getOrNull(composerIndex)?.call("getRecomposeScope")?.let { scopes.add(it) }
+    }
+
+    private fun panelAlpha(): Float =
+        if (WindowBlurState.enabled || GlassConfig.batterySaverBackground == BatterySaverBackground.KEEP_TINT) {
+            GlassConfig.backgroundDim
+        } else {
+            SEMI_TRANSPARENT_ALPHA
+        }
+
+    private fun panelColor(color: Long): Long {
+        val argb = ComposeToolkit.toArgb(color) ?: return color
+        val alpha = (OPAQUE * panelAlpha()).roundToInt().coerceIn(0, OPAQUE)
+        return ComposeToolkit.colorOf(ColorUtils.setAlphaComponent(argb, alpha))
+    }
+
+    private fun notificationAlpha(key: Any, value: Float): Float {
+        val semiTransparent = !WindowBlurState.enabled &&
+                GlassConfig.batterySaverBackground == BatterySaverBackground.SEMI_TRANSPARENT
+        if (!semiTransparent || !panelScrimSeen) return scrimAlpha(key, value)
+        return alphaOver(expansionOf(key, value) * SEMI_TRANSPARENT_PANEL_ALPHA, SEMI_TRANSPARENT_ALPHA)
     }
 
     private fun usesStockScrim(): Boolean =
