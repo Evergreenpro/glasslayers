@@ -29,7 +29,7 @@ class ModuleMain : XposedModule() {
                 if (processName != null && processName != param.packageName) return
                 if (!AppModule.claim()) return
                 HookEnv.init(this, param.classLoader)
-                AppModule.start()
+                AppModule.start(param.applicationInfo)
             }
         }
     }

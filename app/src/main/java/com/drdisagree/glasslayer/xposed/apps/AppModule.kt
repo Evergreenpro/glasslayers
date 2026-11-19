@@ -1,5 +1,6 @@
 package com.drdisagree.glasslayer.xposed.apps
 
+import android.content.pm.ApplicationInfo
 import com.drdisagree.glasslayer.xposed.hook.HookEnv
 import com.drdisagree.glasslayer.xposed.prefs.ModulePrefs
 import com.drdisagree.glasslayer.xposed.systemui.ButtonGlass
@@ -35,9 +36,9 @@ object AppModule {
 
     fun claim(): Boolean = started.compareAndSet(false, true)
 
-    fun start() {
+    fun start(info: ApplicationInfo?) {
         GlassConfig.liveGlass = false
-        ModulePrefs.init(HookEnv.module)
+        ModulePrefs.init(HookEnv.module, info?.deviceProtectedDataDir)
         GlassConfig.reload()
         ModulePrefs.addListener {
             GlassConfig.reload()

@@ -64,7 +64,7 @@ object SystemUiModule {
     fun claim(): Boolean = started.compareAndSet(false, true)
 
     fun start(info: ApplicationInfo?) {
-        ModulePrefs.init(HookEnv.module)
+        ModulePrefs.init(HookEnv.module, info?.deviceProtectedDataDir)
         GlassConfig.reload()
         val safe = RestartGuard.check(info?.deviceProtectedDataDir, ModulePrefs.long(PrefKeys.RESTART_TOKEN, 0L))
         HookReporter.safeMode(safe)

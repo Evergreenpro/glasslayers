@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.conflate
 class HookReportSource(private val context: Context) {
 
     private val prefs: SharedPreferences =
-        context.applicationContext.getSharedPreferences(PrefKeys.GROUP, Context.MODE_PRIVATE)
+        PrefsStorage.of(context)
 
     private val current: HookReport?
         get() = prefs.getString(PrefKeys.HOOK_REPORT, null)?.let(HookReportJsonMapper::fromJson)

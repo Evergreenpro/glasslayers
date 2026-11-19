@@ -2,7 +2,6 @@ package com.drdisagree.glasslayer.data.source
 
 import android.content.ContentProvider
 import android.content.ContentValues
-import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Binder
@@ -17,7 +16,9 @@ class PrefsProvider : ContentProvider() {
         if (method != PrefsContract.METHOD_READ) return null
         enforceCaller()
         val context = context ?: return null
-        return PrefsSnapshot.of(context.getSharedPreferences(PrefKeys.GROUP, Context.MODE_PRIVATE).all, arg)
+        val stored = PrefsStorage.of(context).all
+        if (stored.isEmpty()) return null
+        return PrefsSnapshot.of(stored, arg)
     }
 
     private fun enforceCaller() {

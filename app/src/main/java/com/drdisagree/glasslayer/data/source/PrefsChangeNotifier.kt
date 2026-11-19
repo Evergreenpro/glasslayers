@@ -9,7 +9,7 @@ import com.drdisagree.glasslayer.data.mapper.SyncedPrefKeys
 class PrefsChangeNotifier(context: Context) {
 
     private val appContext = context.applicationContext
-    private val prefs: SharedPreferences = appContext.getSharedPreferences(PrefKeys.GROUP, Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences = PrefsStorage.of(appContext)
 
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         when {

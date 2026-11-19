@@ -58,6 +58,7 @@
         <provider
             android:name=".data.source.PrefsProvider"
             android:authorities="com.drdisagree.glasslayer.prefs"
+            android:directBootAware="true"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
 

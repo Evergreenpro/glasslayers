@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.conflate
 class LocalPrefsSource(context: Context) {
 
     private val prefs: SharedPreferences =
-        context.applicationContext.getSharedPreferences(PrefKeys.GROUP, Context.MODE_PRIVATE)
+        PrefsStorage.of(context)
 
     fun boolean(key: String, default: Boolean): Boolean = prefs.getBoolean(key, default)
 

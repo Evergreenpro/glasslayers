@@ -21,15 +21,16 @@ import java.util.concurrent.Executors
 object ModulePrefs {
 
     private var prefs: SharedPreferences? = null
+    private var snapshot: PrefsSnapshotFile? = null
     private val listeners = CopyOnWriteArrayList<(String?) -> Unit>()
     private val mainHandler = Handler(Looper.getMainLooper())
     private val worker = Executors.newSingleThreadExecutor { Thread(it, WORKER_NAME).apply { isDaemon = true } }
     private val overrides = ConcurrentHashMap<String, Optional<Any>>()
-    private val dispatched = HashMap<String, Optional<Any>>()
+    private val dispatched = ConcurrentHashMap<String, Optional<Any>>()
     private val observer = PrefsObserver(::onProviderChanged)
     private val receiver = PrefsReceiver { intent ->
-        val snapshot = intent.extras
-        worker.execute { Guard.run(BROADCAST_TAG, Unit) { applySnapshot(snapshot) } }
+        val values = intent.extras
+        worker.execute { Guard.run(BROADCAST_TAG, Unit) { applySnapshot(values) } }
     }
     private var attachAttempts = 0
 
@@ -37,13 +38,15 @@ object ModulePrefs {
         worker.execute { Guard.run(REMOTE_TAG, Unit) { onRemoteChange(key) } }
     }
 
-    fun init(module: XposedInterface) {
+    fun init(module: XposedInterface, dataDir: String?) {
         prefs = try {
             module.getRemotePreferences(PrefKeys.GROUP)
         } catch (throwable: Throwable) {
             HookEnv.log("Remote preferences unavailable", throwable)
             null
         }
+        snapshot = dataDir?.let(::PrefsSnapshotFile)
+        seed()
         prefs?.registerOnSharedPreferenceChangeListener(changeListener)
         attachObserver()
     }
@@ -67,6 +70,22 @@ object ModulePrefs {
         }
     }
 
+    private fun seed() {
+        val stored = try {
+            snapshot?.read()
+        } catch (throwable: Throwable) {
+            HookEnv.log("Settings snapshot unreadable, using the stored copy", throwable)
+            null
+        }
+        if (stored == null) {
+            HookEnv.log("No settings snapshot yet, using the stored copy")
+            return
+        }
+        overrides.putAll(stored)
+        dispatched.putAll(stored)
+        HookEnv.log("Settings loaded from snapshot: ${stored.size} keys")
+    }
+
     private fun attachObserver() {
         val context = HostApplication.get()
         if (context == null) {
@@ -77,6 +96,7 @@ object ModulePrefs {
         }
         try {
             context.contentResolver.registerContentObserver(PrefsContract.CHANGED_URI, true, observer)
+            worker.execute { Guard.run(PROVIDER_TAG, Unit) { readProvider(null) } }
         } catch (_: SecurityException) {
             listenForBroadcasts(context)
         } catch (throwable: Throwable) {
@@ -107,10 +127,14 @@ object ModulePrefs {
         result ?: return
         val values = result.getBundle(PrefsContract.EXTRA_VALUES) ?: Bundle.EMPTY
         val changed = ArrayList<String>()
-        values.keySet().forEach { name -> if (applyOverride(name, Optional.ofNullable(values.valueOf(name)))) changed += name }
-        result.getStringArrayList(PrefsContract.EXTRA_REMOVED)?.forEach { name ->
-            if (applyOverride(name, Optional.empty())) changed += name
+        val known = overrides.size
+        values.keySet().forEach { name ->
+            if (store(name, Optional.ofNullable(values.valueOf(name)), dispatched[name] ?: effective(name))) changed += name
         }
+        result.getStringArrayList(PrefsContract.EXTRA_REMOVED)?.forEach { name ->
+            if (store(name, Optional.empty(), dispatched[name] ?: effective(name))) changed += name
+        }
+        persist(changed.isNotEmpty() || overrides.size != known)
         when (changed.size) {
             0 -> Unit
             1 -> dispatch(changed[0])
@@ -118,26 +142,30 @@ object ModulePrefs {
         }
     }
 
-    private fun applyOverride(key: String, value: Optional<Any>): Boolean {
-        val before = effective(key)
-        overrides[key] = value
-        if (value == before) return false
-        dispatched[key] = value
-        return true
-    }
-
     private fun onRemoteChange(key: String?) {
         if (key == null) {
-            overrides.clear()
-            dispatched.clear()
-            dispatch(null)
+            readProvider(null)
             return
         }
-        overrides.remove(key)
-        val value = Optional.ofNullable(remoteValue(key))
-        if (dispatched[key] == value) return
-        dispatched[key] = value
+        if (!store(key, Optional.ofNullable(remoteValue(key)), dispatched[key])) return
+        persist(true)
         dispatch(key)
+    }
+
+    private fun store(key: String, value: Optional<Any>, before: Optional<Any>?): Boolean {
+        overrides[key] = value
+        dispatched[key] = value
+        return value != before
+    }
+
+    private fun persist(changed: Boolean) {
+        val file = snapshot ?: return
+        if (!changed && file.exists()) return
+        try {
+            file.write(HashMap(overrides))
+        } catch (throwable: Throwable) {
+            HookEnv.log("Settings snapshot not saved", throwable)
+        }
     }
 
     private fun effective(key: String): Optional<Any> = overrides[key] ?: Optional.ofNullable(remoteValue(key))
