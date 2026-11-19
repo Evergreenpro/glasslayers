@@ -63,6 +63,25 @@ fun GlassPageScreen(page: GlassPage, viewModel: SettingsViewModel, onBack: () ->
     PageScaffold(
         title = stringResource(page.pageTitle),
         onBack = onBack,
+        pinned = if (page != GlassPage.PERFORMANCE && state.loaded) {
+            {
+                val tintLevel = page.levels.firstOrNull { it != GlassLevel.BACKGROUND_BLUR }
+                GlassPreview(
+                    blurDp = if (StyleParam.BLUR_RADIUS in page.styleParams) styleValue(StyleParam.BLUR_RADIUS) else 0f,
+                    refraction = if (StyleParam.REFRACTION in page.styleParams) styleValue(StyleParam.REFRACTION) / PERCENT else 0f,
+                    reflection = styleValue(StyleParam.REFLECTION) / PERCENT,
+                    rim = styleValue(StyleParam.RIM) / PERCENT,
+                    shadow = styleValue(StyleParam.SHADOW) / PERCENT,
+                    tint = if (page.hasStyle) tintLevel?.let { levelValue(it) / PERCENT } ?: 0f else 0f,
+                    sceneDim = if (page == GlassPage.BACKGROUND) levelValue(GlassLevel.BACKGROUND_DIM) / PERCENT else 0f,
+                    sceneBlurDp = if (page == GlassPage.BACKGROUND) levelValue(GlassLevel.BACKGROUND_BLUR) / PERCENT * SCENE_BLUR_MAX else 0f,
+                    showGlass = page.hasStyle,
+                    modifier = dimmed
+                )
+            }
+        } else {
+            null
+        },
         overlay = {
             ChoiceDialog(
                 visible = choice == PerformanceChoice.MODE,
@@ -100,21 +119,6 @@ fun GlassPageScreen(page: GlassPage, viewModel: SettingsViewModel, onBack: () ->
     ) {
         if (toggle == null) item(key = "summary") { Caption(stringResource(page.summary)) }
         if (!state.loaded) return@PageScaffold
-        if (page != GlassPage.PERFORMANCE) item(key = "preview") {
-            val tintLevel = page.levels.firstOrNull { it != GlassLevel.BACKGROUND_BLUR }
-            GlassPreview(
-                blurDp = if (StyleParam.BLUR_RADIUS in page.styleParams) styleValue(StyleParam.BLUR_RADIUS) else 0f,
-                refraction = if (StyleParam.REFRACTION in page.styleParams) styleValue(StyleParam.REFRACTION) / PERCENT else 0f,
-                reflection = styleValue(StyleParam.REFLECTION) / PERCENT,
-                rim = styleValue(StyleParam.RIM) / PERCENT,
-                shadow = styleValue(StyleParam.SHADOW) / PERCENT,
-                tint = if (page.hasStyle) tintLevel?.let { levelValue(it) / PERCENT } ?: 0f else 0f,
-                sceneDim = if (page == GlassPage.BACKGROUND) levelValue(GlassLevel.BACKGROUND_DIM) / PERCENT else 0f,
-                sceneBlurDp = if (page == GlassPage.BACKGROUND) levelValue(GlassLevel.BACKGROUND_BLUR) / PERCENT * SCENE_BLUR_MAX else 0f,
-                showGlass = page.hasStyle,
-                modifier = dimmed.animateItem()
-            )
-        }
         if (toggle != null) {
             item(key = "toggle") {
                 GlassContainer(

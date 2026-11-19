@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -22,13 +25,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.drdisagree.glasslayer.R
 import com.drdisagree.glasslayer.ui.theme.OnInk
@@ -40,12 +47,29 @@ fun PageScaffold(
     onBack: (() -> Unit)? = null,
     overlay: @Composable BoxScope.() -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
+    pinned: (@Composable () -> Unit)? = null,
     content: LazyListScope.() -> Unit
 ) {
     val statusTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
     val navBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val list = rememberLazyListState()
-    val ramp = with(LocalDensity.current) { BLUR_RAMP.toPx() }
+    val density = LocalDensity.current
+    val ramp = with(density) { BLUR_RAMP.toPx() }
+    val pinTop = statusTop + PIN_GAP
+    val pinTopPx = with(density) { pinTop.roundToPx() }
+    var pinnedHeight by remember { mutableIntStateOf(0) }
+    val pinnedY by remember(list, pinTopPx) {
+        derivedStateOf {
+            val info = list.layoutInfo
+            val item = info.visibleItemsInfo.firstOrNull { it.key == PINNED_KEY }
+            when {
+                item != null -> maxOf(item.offset - info.viewportStartOffset, pinTopPx)
+                list.firstVisibleItemIndex > PINNED_INDEX -> pinTopPx
+                else -> info.viewportEndOffset
+            }
+        }
+    }
+    val isPinned by remember(pinTopPx) { derivedStateOf { pinnedY <= pinTopPx } }
     val collapse by remember(list) {
         derivedStateOf {
             val item = list.layoutInfo.visibleItemsInfo.firstOrNull { it.key == TITLE_KEY }
@@ -66,13 +90,23 @@ fun PageScaffold(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item(key = TITLE_KEY) { ScreenTitle(title, Modifier.graphicsLayer { alpha = 1f - collapse }) }
+                if (pinned != null) {
+                    item(key = PINNED_KEY) {
+                        Spacer(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(with(density) { pinnedHeight.toDp() })
+                        )
+                    }
+                }
                 content()
             }
         },
         overlay = {
             val barBackdrop = rememberLayerBackdrop()
+            val pinnedBottom = pinTop + with(density) { pinnedHeight.toDp() } + PIN_GAP_BELOW
             ProgressiveBlurBar(
-                statusTop + 120.dp,
+                if (pinned != null && isPinned) maxOf(statusTop + 120.dp, pinnedBottom) else statusTop + 120.dp,
                 barBackdrop,
                 progress = {
                     if (list.firstVisibleItemIndex > 0) 1f else list.firstVisibleItemScrollOffset / ramp
@@ -112,6 +146,17 @@ fun PageScaffold(
                     content = actions
                 )
             }
+            if (pinned != null) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .offset { IntOffset(0, pinnedY) }
+                        .onSizeChanged { pinnedHeight = it.height }
+                ) {
+                    pinned()
+                }
+            }
             overlay()
         }
     )
@@ -122,3 +167,7 @@ private val BAR_HEIGHT = 44.dp
 private val TITLE_INSET = 72.dp
 private val TITLE_SLIDE = 8.dp
 private const val TITLE_KEY = "title"
+private const val PINNED_KEY = "pinned"
+private const val PINNED_INDEX = 1
+private val PIN_GAP = 60.dp
+private val PIN_GAP_BELOW = 16.dp
