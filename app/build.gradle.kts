@@ -18,8 +18,8 @@ android {
         applicationId = "com.drdisagree.glasslayer"
         minSdk = 36
         targetSdk = 37
-        versionCode = 3
-        versionName = "1.1.0"
+        versionCode = 4
+        versionName = "1.2.0"
     }
 
     val keystorePropertiesFile = rootProject.file("keystore.properties")
