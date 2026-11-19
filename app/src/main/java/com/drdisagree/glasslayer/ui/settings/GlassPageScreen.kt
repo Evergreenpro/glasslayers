@@ -65,14 +65,14 @@ fun GlassPageScreen(page: GlassPage, viewModel: SettingsViewModel, onBack: () ->
         onBack = onBack,
         pinned = if (page != GlassPage.PERFORMANCE && state.loaded) {
             {
-                val tintLevel = page.levels.firstOrNull { it != GlassLevel.BACKGROUND_BLUR }
                 GlassPreview(
                     blurDp = if (StyleParam.BLUR_RADIUS in page.styleParams) styleValue(StyleParam.BLUR_RADIUS) else 0f,
                     refraction = if (StyleParam.REFRACTION in page.styleParams) styleValue(StyleParam.REFRACTION) / PERCENT else 0f,
                     reflection = styleValue(StyleParam.REFLECTION) / PERCENT,
                     rim = styleValue(StyleParam.RIM) / PERCENT,
                     shadow = styleValue(StyleParam.SHADOW) / PERCENT,
-                    tint = if (page.hasStyle) tintLevel?.let { levelValue(it) / PERCENT } ?: 0f else 0f,
+                    tints = page.levels.map { levelValue(it) / PERCENT },
+                    pieces = rememberPreviewPieces(page),
                     sceneDim = if (page == GlassPage.BACKGROUND) levelValue(GlassLevel.BACKGROUND_DIM) / PERCENT else 0f,
                     sceneBlurDp = if (page == GlassPage.BACKGROUND) levelValue(GlassLevel.BACKGROUND_BLUR) / PERCENT * SCENE_BLUR_MAX else 0f,
                     showGlass = page.hasStyle,
