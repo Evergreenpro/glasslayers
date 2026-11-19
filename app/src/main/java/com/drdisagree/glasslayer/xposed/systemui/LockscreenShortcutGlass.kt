@@ -103,6 +103,7 @@ object LockscreenShortcutGlass {
 
     private fun tinted(color: Long): Long {
         val argb = ComposeToolkit.toArgb(color) ?: return color
+        if (Color.alpha(argb) == 0) return color
         val alpha = (255 * GlassConfig.lockscreenShortcutTint).roundToInt().coerceIn(0, 255)
         return ComposeToolkit.colorOf(ColorUtils.setAlphaComponent(argb, alpha))
     }
