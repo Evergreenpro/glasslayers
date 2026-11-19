@@ -34,7 +34,11 @@ object QsOpenMotion {
     private const val EXPANSION_LISTENER = "${SystemUiModule.PACKAGE}.shade.ShadeExpansionListener"
     private const val BAR_STATE_CONTROLLER = "${SystemUiModule.PACKAGE}.statusbar.StatusBarStateControllerImpl"
     private const val STACK_LAYOUT = "${SystemUiModule.PACKAGE}.statusbar.notification.stack.NotificationStackScrollLayout"
-    private const val PANEL_VIEW = "${SystemUiModule.PACKAGE}.shade.NotificationPanelView"
+    private val touchViews = listOf(
+        "${SystemUiModule.PACKAGE}.shade.NotificationPanelView",
+        "${SystemUiModule.PACKAGE}.scene.ui.view.SceneWindowRootView",
+        "${SystemUiModule.PACKAGE}.statusbar.phone.PhoneStatusBarView"
+    )
     private const val ADD_LISTENER = "addExpansionListener"
     private const val ON_EXPANSION = "onPanelExpansionChanged"
     private val touchSources = listOf(
@@ -118,7 +122,9 @@ object QsOpenMotion {
         touchSources.forEach { className ->
             hooks += HookEnv.findClass(className).hookAllBefore("handleExternalTouch") { chain -> recordTouch(chain.args.firstOrNull()) }
         }
-        hooks += HookEnv.findClass(PANEL_VIEW).hookAllBefore("dispatchTouchEvent") { chain -> recordTouch(chain.args.firstOrNull()) }
+        touchViews.forEach { className ->
+            hooks += HookEnv.findClass(className).hookAllBefore("dispatchTouchEvent") { chain -> recordTouch(chain.args.firstOrNull()) }
+        }
         hooks += HookEnv.findClass(BAR_STATE_CONTROLLER).hookAllAfter("addCallback") { chain, _ ->
             if (barState?.get() == null) chain.thisObject?.let { barState = WeakReference(it) }
         }
