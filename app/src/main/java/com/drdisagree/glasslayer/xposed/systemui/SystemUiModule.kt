@@ -27,6 +27,8 @@ object SystemUiModule {
         "QsOpenMotion" to QsOpenMotion::install,
         "NotificationGlass" to NotificationGlass::install,
         "LockscreenShortcutGlass" to LockscreenShortcutGlass::install,
+        "LockscreenNowPlayingGlass" to LockscreenNowPlayingGlass::install,
+        "LockscreenFingerprintGlass" to LockscreenFingerprintGlass::install,
         "BouncerGlass" to BouncerGlass::install,
         "VolumeGlass" to VolumeGlass::install,
         "VolumePanelGlass" to VolumePanelGlass::install,

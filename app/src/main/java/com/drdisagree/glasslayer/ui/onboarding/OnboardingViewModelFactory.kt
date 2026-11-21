@@ -11,6 +11,7 @@ fun onboardingViewModelFactory(container: AppContainer): ViewModelProvider.Facto
             observeFramework = container.observeFramework,
             observeHookReport = container.observeHookReport,
             getInstalledApk = container.getInstalledApk,
+            getInstallTime = container.getInstallTime,
             requestHookReport = container.requestHookReport,
             restartSystemUi = container.restartSystemUi,
             checkRoot = container.checkRoot,

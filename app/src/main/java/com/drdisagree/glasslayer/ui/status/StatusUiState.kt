@@ -16,7 +16,7 @@ data class StatusUiState(
         get() = framework?.scope?.contains(SYSTEMUI) == true
 
     val isStale: Boolean
-        get() = report?.isStale(installedApkPath) != false
+        get() = report?.isStale(installedApkPath, installedAt) != false
 }
 
 private const val SYSTEMUI = "com.android.systemui"

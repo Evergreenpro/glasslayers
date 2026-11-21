@@ -15,6 +15,8 @@ internal object PreviewLayouts {
         GlassPage.NOTIFICATIONS -> notifications()
         GlassPage.HEADS_UP -> listOf(piece(8, 14, 284, 72, round(24), tint = 0))
         GlassPage.LOCKSCREEN_NOTIFICATIONS -> stack(16, 38, 268, 58)
+        GlassPage.LOCKSCREEN_NOW_PLAYING -> listOf(piece(16, 40, 268, 92, round(32), tint = 0))
+        GlassPage.LOCKSCREEN_FINGERPRINT -> listOf(piece(118, 60, 64, 64, round(32), tint = 0))
         GlassPage.LOCKSCREEN_SHORTCUTS -> listOf(
             piece(18, 92, 64, 64, pill(), tint = 0),
             piece(218, 92, 64, 64, pill(), tint = 0)

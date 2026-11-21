@@ -19,6 +19,8 @@ object GlassPrefMapper {
         GlassToggle.HEADS_UP -> PrefKeys.HEADS_UP
         GlassToggle.LOCKSCREEN_NOTIFICATIONS -> PrefKeys.LOCKSCREEN_NOTIFICATIONS
         GlassToggle.LOCKSCREEN_SHORTCUTS -> PrefKeys.LOCKSCREEN_SHORTCUTS
+        GlassToggle.LOCKSCREEN_NOW_PLAYING -> PrefKeys.LOCKSCREEN_NOW_PLAYING
+        GlassToggle.LOCKSCREEN_FINGERPRINT -> PrefKeys.LOCKSCREEN_FINGERPRINT
         GlassToggle.BOUNCER -> PrefKeys.BOUNCER
         GlassToggle.VOLUME -> PrefKeys.VOLUME
         GlassToggle.POWER_MENU -> PrefKeys.POWER_MENU
@@ -41,7 +43,11 @@ object GlassPrefMapper {
 
     fun default(toggle: GlassToggle): Boolean = when (toggle) {
         GlassToggle.ENABLED -> PrefKeys.DEFAULT_ENABLED
-        GlassToggle.LOCKSCREEN_NOTIFICATIONS, GlassToggle.LOCKSCREEN_SHORTCUTS, GlassToggle.BOUNCER -> PrefKeys.DEFAULT_LOCKSCREEN
+        GlassToggle.LOCKSCREEN_NOTIFICATIONS,
+        GlassToggle.LOCKSCREEN_SHORTCUTS,
+        GlassToggle.LOCKSCREEN_NOW_PLAYING,
+        GlassToggle.LOCKSCREEN_FINGERPRINT,
+        GlassToggle.BOUNCER -> PrefKeys.DEFAULT_LOCKSCREEN
         else -> PrefKeys.DEFAULT_MODULE
     }
 
@@ -60,6 +66,8 @@ object GlassPrefMapper {
         GlassLevel.HEADS_UP_TINT -> PrefKeys.HEADS_UP_TINT
         GlassLevel.LOCKSCREEN_NOTIFICATION_TINT -> PrefKeys.LOCKSCREEN_NOTIFICATION_TINT
         GlassLevel.LOCKSCREEN_SHORTCUT_TINT -> PrefKeys.LOCKSCREEN_SHORTCUT_TINT
+        GlassLevel.LOCKSCREEN_NOW_PLAYING_TINT -> PrefKeys.LOCKSCREEN_NOW_PLAYING_TINT
+        GlassLevel.LOCKSCREEN_FINGERPRINT_TINT -> PrefKeys.LOCKSCREEN_FINGERPRINT_TINT
         GlassLevel.BOUNCER_TINT -> PrefKeys.BOUNCER_TINT
         GlassLevel.BOUNCER_ACCENT_TINT -> PrefKeys.BOUNCER_ACCENT_TINT
         GlassLevel.VOLUME_TINT -> PrefKeys.VOLUME_TINT
@@ -109,6 +117,8 @@ object GlassPrefMapper {
         GlassLevel.HEADS_UP_TINT -> PrefKeys.DEFAULT_HEADS_UP_TINT
         GlassLevel.LOCKSCREEN_NOTIFICATION_TINT -> PrefKeys.DEFAULT_LOCKSCREEN_NOTIFICATION_TINT
         GlassLevel.LOCKSCREEN_SHORTCUT_TINT -> PrefKeys.DEFAULT_LOCKSCREEN_SHORTCUT_TINT
+        GlassLevel.LOCKSCREEN_NOW_PLAYING_TINT -> PrefKeys.DEFAULT_LOCKSCREEN_NOW_PLAYING_TINT
+        GlassLevel.LOCKSCREEN_FINGERPRINT_TINT -> PrefKeys.DEFAULT_LOCKSCREEN_FINGERPRINT_TINT
         GlassLevel.BOUNCER_TINT -> PrefKeys.DEFAULT_BOUNCER_TINT
         GlassLevel.BOUNCER_ACCENT_TINT -> PrefKeys.DEFAULT_BOUNCER_ACCENT_TINT
         GlassLevel.VOLUME_TINT -> PrefKeys.DEFAULT_VOLUME_TINT
@@ -165,6 +175,8 @@ object GlassPrefMapper {
         GlassSurface.HEADS_UP -> PrefKeys.HEADS_UP
         GlassSurface.LOCKSCREEN_NOTIFICATIONS -> PrefKeys.LOCKSCREEN_NOTIFICATIONS
         GlassSurface.LOCKSCREEN_SHORTCUTS -> PrefKeys.LOCKSCREEN_SHORTCUTS
+        GlassSurface.LOCKSCREEN_NOW_PLAYING -> PrefKeys.LOCKSCREEN_NOW_PLAYING
+        GlassSurface.LOCKSCREEN_FINGERPRINT -> PrefKeys.LOCKSCREEN_FINGERPRINT
         GlassSurface.BOUNCER -> PrefKeys.BOUNCER
         GlassSurface.VOLUME -> PrefKeys.VOLUME
         GlassSurface.POWER_MENU -> PrefKeys.POWER_MENU

@@ -102,6 +102,24 @@ enum class GlassPage(
         true,
         listOf(GlassLevel.LOCKSCREEN_SHORTCUT_TINT)
     ),
+    LOCKSCREEN_NOW_PLAYING(
+        R.string.mod_lockscreen_now_playing,
+        R.string.page_lockscreen_now_playing_title,
+        R.string.mod_lockscreen_now_playing_summary,
+        GlassToggle.LOCKSCREEN_NOW_PLAYING,
+        GlassSurface.LOCKSCREEN_NOW_PLAYING,
+        true,
+        listOf(GlassLevel.LOCKSCREEN_NOW_PLAYING_TINT)
+    ),
+    LOCKSCREEN_FINGERPRINT(
+        R.string.mod_lockscreen_fingerprint,
+        R.string.page_lockscreen_fingerprint_title,
+        R.string.mod_lockscreen_fingerprint_summary,
+        GlassToggle.LOCKSCREEN_FINGERPRINT,
+        GlassSurface.LOCKSCREEN_FINGERPRINT,
+        true,
+        listOf(GlassLevel.LOCKSCREEN_FINGERPRINT_TINT)
+    ),
     BOUNCER(
         R.string.mod_bouncer,
         R.string.page_bouncer_title,

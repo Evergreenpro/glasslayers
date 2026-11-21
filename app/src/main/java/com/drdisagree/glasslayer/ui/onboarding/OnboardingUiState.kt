@@ -8,13 +8,14 @@ data class OnboardingUiState(
     val report: HookReport? = null,
     val root: RootState = RootState.UNKNOWN,
     val restarting: Boolean = false,
-    val installedApkPath: String = ""
+    val installedApkPath: String = "",
+    val installedAt: Long = 0L
 ) {
     val isScoped: Boolean
         get() = framework?.scope?.contains(SYSTEMUI) == true
 
     val isLoaded: Boolean
-        get() = report != null && !report.isStale(installedApkPath)
+        get() = report != null && !report.isStale(installedApkPath, installedAt)
 
     val isReady: Boolean
         get() = framework != null && isScoped && isLoaded

@@ -16,5 +16,15 @@ data class HookReport(
     val logs: List<String>,
     val safeMode: Boolean = false
 ) {
-    fun isStale(installedApkPath: String): Boolean = moduleApkPath.isEmpty() || moduleApkPath != installedApkPath
+    /**
+     * Whether SystemUI is still running an older build than the one installed.
+     *
+     * The install time is the reliable signal: the path SystemUI reports for the module can differ from the
+     * app's own path on some frameworks even when the freshest code is loaded, which left the restart banner
+     * stuck forever. The path is only used when either time is unknown.
+     */
+    fun isStale(installedApkPath: String, installedAt: Long = 0L): Boolean = when {
+        moduleUpdatedAt > 0L && installedAt > 0L -> moduleUpdatedAt < installedAt
+        else -> moduleApkPath.isEmpty() || moduleApkPath != installedApkPath
+    }
 }

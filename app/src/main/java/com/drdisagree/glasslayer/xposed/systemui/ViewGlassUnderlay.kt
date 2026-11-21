@@ -113,7 +113,8 @@ object ViewGlassUnderlay {
                 )
                 if (count < 0) count = layer
             }
-            val result = stock()
+            val fade = fadeFraction(target)
+            val result = if (fade < 1f) drawFaded(view, canvas, fade) { stock() } else stock()
             if (target.rimOnTop && target.tinted != null && target.stockAlpha > 0) {
                 val strength = if (GlassConfig.glassAvailable) target.appliedAlpha.coerceAtLeast(0) / target.stockAlpha.toFloat() else 1f
                 target.glass?.drawRim(canvas, strength, target.sheenOnTop, target.rimExtend?.invoke(view) ?: 0)
@@ -121,6 +122,26 @@ object ViewGlassUnderlay {
             return result
         } finally {
             if (count >= 0) canvas.restoreToCount(count)
+        }
+    }
+
+    private fun fadeFraction(target: UnderlayTarget): Float {
+        val fraction = target.contentAlpha ?: return 1f
+        return if (target.active()) fraction().coerceIn(0f, 1f) else 1f
+    }
+
+    private inline fun drawFaded(view: View, canvas: Canvas, fraction: Float, content: () -> Any?): Any? {
+        val layer = canvas.saveLayerAlpha(
+            view.scrollX.toFloat(),
+            view.scrollY.toFloat(),
+            (view.scrollX + view.width).toFloat(),
+            (view.scrollY + view.height).toFloat(),
+            (fraction * UnderlayTarget.OPAQUE).roundToInt().coerceIn(0, UnderlayTarget.OPAQUE)
+        )
+        try {
+            return content()
+        } finally {
+            canvas.restoreToCount(layer)
         }
     }
 
@@ -212,7 +233,8 @@ object ViewGlassUnderlay {
         segmented: Boolean = false,
         sheenOnTop: Boolean = false,
         backdrop: ((View) -> Drawable?)? = null,
-        rimExtend: ((View) -> Int)? = null
+        rimExtend: ((View) -> Int)? = null,
+        contentAlpha: (() -> Float)? = null
     ) {
         val existing = targets[view]
         if (existing == null) {
@@ -224,6 +246,7 @@ object ViewGlassUnderlay {
                     it.sheenOnTop = sheenOnTop
                     it.backdrop = backdrop
                     it.rimExtend = rimExtend
+                    it.contentAlpha = contentAlpha
                 }
         } else {
             existing.tintInGlass = tintInGlass
@@ -236,6 +259,7 @@ object ViewGlassUnderlay {
             existing.baseResolved = false
             existing.backdrop = backdrop
             existing.rimExtend = rimExtend
+            existing.contentAlpha = contentAlpha
         }
         view.invalidate()
     }

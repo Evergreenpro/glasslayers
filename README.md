@@ -10,7 +10,7 @@ Brings iOS-style liquid glass to Android. Glass Layer is a root module that turn
 
 - **Quick settings**: background, tiles, footer buttons, brightness slider, media player
 - **Notifications**: notifications, heads-up, status bar chips, toasts
-- **Lockscreen**: notifications, shortcuts, PIN pad
+- **Lockscreen**: notifications, Now Playing card, fingerprint, shortcuts, PIN pad
 - **Volume**: volume dialog, expanded volume panel
 - **Dialogs and menus**: system dialogs, power menu, expand animations
 - **Controls**: buttons, switches, sliders (also in Settings and the package installer)

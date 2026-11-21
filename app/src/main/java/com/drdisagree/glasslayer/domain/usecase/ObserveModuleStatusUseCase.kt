@@ -10,7 +10,7 @@ class ObserveModuleStatusUseCase(private val repository: StatusRepository) {
         val active = framework != null
         ModuleStatus(
             frameworkActive = active,
-            restartNeeded = active && (report == null || report.isStale(repository.installedApkPath())),
+            restartNeeded = active && (report == null || report.isStale(repository.installedApkPath(), repository.installedAt())),
             safeMode = active && report?.safeMode == true
         )
     }

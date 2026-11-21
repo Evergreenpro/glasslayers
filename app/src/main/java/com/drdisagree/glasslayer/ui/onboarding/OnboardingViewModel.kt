@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drdisagree.glasslayer.domain.usecase.CheckRootUseCase
 import com.drdisagree.glasslayer.domain.usecase.CompleteOnboardingUseCase
+import com.drdisagree.glasslayer.domain.usecase.GetInstallTimeUseCase
 import com.drdisagree.glasslayer.domain.usecase.GetInstalledApkUseCase
 import com.drdisagree.glasslayer.domain.usecase.ObserveFrameworkUseCase
 import com.drdisagree.glasslayer.domain.usecase.ObserveHookReportUseCase
@@ -21,6 +22,7 @@ class OnboardingViewModel(
     observeFramework: ObserveFrameworkUseCase,
     observeHookReport: ObserveHookReportUseCase,
     private val getInstalledApk: GetInstalledApkUseCase,
+    private val getInstallTime: GetInstallTimeUseCase,
     private val requestHookReport: RequestHookReportUseCase,
     private val restartSystemUi: RestartSystemUiUseCase,
     private val checkRoot: CheckRootUseCase,
@@ -36,11 +38,11 @@ class OnboardingViewModel(
         root,
         restarting
     ) { framework, report, rootState, isRestarting ->
-        OnboardingUiState(framework, report, rootState, isRestarting, getInstalledApk())
+        OnboardingUiState(framework, report, rootState, isRestarting, getInstalledApk(), getInstallTime())
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS),
-        OnboardingUiState(installedApkPath = getInstalledApk())
+        OnboardingUiState(installedApkPath = getInstalledApk(), installedAt = getInstallTime())
     )
 
     fun onResume() {

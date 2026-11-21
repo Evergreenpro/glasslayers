@@ -65,6 +65,14 @@ object GlassConfig {
         private set
     var lockscreenShortcutTint = PrefKeys.DEFAULT_LOCKSCREEN_SHORTCUT_TINT / 100f
         private set
+    var lockscreenNowPlaying = PrefKeys.DEFAULT_LOCKSCREEN
+        private set
+    var lockscreenNowPlayingTint = PrefKeys.DEFAULT_LOCKSCREEN_NOW_PLAYING_TINT / 100f
+        private set
+    var lockscreenFingerprint = PrefKeys.DEFAULT_LOCKSCREEN
+        private set
+    var lockscreenFingerprintTint = PrefKeys.DEFAULT_LOCKSCREEN_FINGERPRINT_TINT / 100f
+        private set
     var bouncer = PrefKeys.DEFAULT_LOCKSCREEN
         private set
     var bouncerTint = PrefKeys.DEFAULT_BOUNCER_TINT / 100f
@@ -203,6 +211,12 @@ object GlassConfig {
     val lockscreenShortcutsActive: Boolean
         get() = isActive && lockscreenShortcuts && !DozeTracker.isDozing
 
+    val lockscreenNowPlayingActive: Boolean
+        get() = isActive && lockscreenNowPlaying && !DozeTracker.isDozing
+
+    val lockscreenFingerprintActive: Boolean
+        get() = isActive && lockscreenFingerprint && !DozeTracker.isDozing
+
     val bouncerActive: Boolean
         get() = isActive && bouncer
 
@@ -305,6 +319,12 @@ object GlassConfig {
         lockscreenShortcuts = ModulePrefs.boolean(PrefKeys.LOCKSCREEN_SHORTCUTS, PrefKeys.DEFAULT_LOCKSCREEN)
         lockscreenShortcutTint =
             percent(PrefKeys.LOCKSCREEN_SHORTCUT_TINT, PrefKeys.DEFAULT_LOCKSCREEN_SHORTCUT_TINT)
+        lockscreenNowPlaying = ModulePrefs.boolean(PrefKeys.LOCKSCREEN_NOW_PLAYING, PrefKeys.DEFAULT_LOCKSCREEN)
+        lockscreenNowPlayingTint =
+            percent(PrefKeys.LOCKSCREEN_NOW_PLAYING_TINT, PrefKeys.DEFAULT_LOCKSCREEN_NOW_PLAYING_TINT)
+        lockscreenFingerprint = ModulePrefs.boolean(PrefKeys.LOCKSCREEN_FINGERPRINT, PrefKeys.DEFAULT_LOCKSCREEN)
+        lockscreenFingerprintTint =
+            percent(PrefKeys.LOCKSCREEN_FINGERPRINT_TINT, PrefKeys.DEFAULT_LOCKSCREEN_FINGERPRINT_TINT)
         bouncer = ModulePrefs.boolean(PrefKeys.BOUNCER, PrefKeys.DEFAULT_LOCKSCREEN)
         bouncerTint = percent(PrefKeys.BOUNCER_TINT, PrefKeys.DEFAULT_BOUNCER_TINT)
         bouncerAccentTint = percent(PrefKeys.BOUNCER_ACCENT_TINT, PrefKeys.DEFAULT_BOUNCER_ACCENT_TINT)
