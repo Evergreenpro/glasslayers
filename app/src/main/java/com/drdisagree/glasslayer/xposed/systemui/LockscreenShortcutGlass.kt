@@ -12,6 +12,7 @@ import com.drdisagree.glasslayer.xposed.glass.ComposeLiquidGlass
 import com.drdisagree.glasslayer.xposed.hook.Guard
 import com.drdisagree.glasslayer.xposed.hook.HookEnv
 import com.drdisagree.glasslayer.xposed.hook.call
+import com.drdisagree.glasslayer.xposed.hook.field
 import com.drdisagree.glasslayer.xposed.hook.hookAllAfter
 import com.drdisagree.glasslayer.xposed.hook.hookMatching
 import com.drdisagree.glasslayer.xposed.hook.proceedWithArgs
@@ -31,6 +32,7 @@ object LockscreenShortcutGlass {
     private val shortcutViews = Collections.newSetFromMap(WeakHashMap<View, Boolean>())
     private val shortcutControllers = Collections.newSetFromMap(WeakHashMap<Any, Boolean>())
     private val recomposeScopes = Collections.newSetFromMap(WeakHashMap<Any, Boolean>())
+    private val drawNodes = Collections.newSetFromMap(WeakHashMap<Any, Boolean>())
     private val modifierToOriginal = WeakHashMap<Any, Any>()
     private val mainHandler = Handler(Looper.getMainLooper())
 
@@ -90,6 +92,7 @@ object LockscreenShortcutGlass {
         mainHandler.post {
             shortcutViews.toList().forEach { applyShortcutGlass(it) }
             recomposeScopes.toList().forEach { it.call("invalidateForResult", null) }
+            drawNodes.toList().forEach { node -> Guard.run(REDRAW_TAG, Unit) { ComposeToolkit.invalidateDraw(node) } }
         }
     }
 
@@ -123,6 +126,7 @@ object LockscreenShortcutGlass {
     }
 
     private fun drawComposeGlass(drawScope: Any, shape: Any) {
+        drawScope.field(DRAW_NODE)?.let { drawNodes.add(it) }
         if (!GlassConfig.lockscreenShortcutsActive) return
         val surface = GlassConfig.surface(PrefKeys.LOCKSCREEN_SHORTCUTS)
         Guard.run("LockscreenShortcutGlass.compose_glass", Unit) {
@@ -139,3 +143,6 @@ object LockscreenShortcutGlass {
         )
     }
 }
+
+private const val DRAW_NODE = "drawNode"
+private const val REDRAW_TAG = "LockscreenShortcutGlass.redraw"
