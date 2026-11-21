@@ -109,7 +109,7 @@ enum class GlassPage(
         GlassToggle.BOUNCER,
         GlassSurface.BOUNCER,
         true,
-        listOf(GlassLevel.BOUNCER_TINT)
+        listOf(GlassLevel.BOUNCER_TINT, GlassLevel.BOUNCER_ACCENT_TINT)
     ),
     VOLUME(
         R.string.mod_volume,

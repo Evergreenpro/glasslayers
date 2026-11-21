@@ -22,6 +22,7 @@ internal fun levelLabel(level: GlassLevel): Int = when (level) {
     GlassLevel.LOCKSCREEN_NOTIFICATION_TINT -> R.string.level_notification_tint
     GlassLevel.LOCKSCREEN_SHORTCUT_TINT -> R.string.level_shortcut_tint
     GlassLevel.BOUNCER_TINT -> R.string.level_bouncer_tint
+    GlassLevel.BOUNCER_ACCENT_TINT -> R.string.level_keyboard_accent_tint
     GlassLevel.VOLUME_TINT -> R.string.level_volume_tint
     GlassLevel.VOLUME_SLIDER_TINT -> R.string.level_brightness_tint
     GlassLevel.ACTIVE_VOLUME_SLIDER_TINT -> R.string.level_active_volume_tint

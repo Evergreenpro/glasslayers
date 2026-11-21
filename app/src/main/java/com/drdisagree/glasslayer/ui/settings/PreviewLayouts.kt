@@ -73,8 +73,9 @@ internal object PreviewLayouts {
     )
 
     private fun bouncer(): List<PreviewPiece> = (0 until PIN_KEYS).map { index ->
-        val column = if (index == PIN_KEYS - 1) 1 else index % PIN_COLUMNS
-        piece(79 + column * 52, 1 + (index / PIN_COLUMNS) * 44, 38, 38, pill(), tint = 0)
+        val column = index % PIN_COLUMNS
+        val action = index >= PIN_KEYS - PIN_COLUMNS && column != 1
+        piece(79 + column * 52, 1 + (index / PIN_COLUMNS) * 44, 38, 38, pill(), tint = if (action) 1 else 0, accent = action)
     }
 
     private fun volume(): List<PreviewPiece> = listOf(
@@ -166,7 +167,7 @@ internal object PreviewLayouts {
     private const val CORNERS = 4
     private val RECORDING_RED = Color(0xFFE5483D)
     private val PRIVACY_GREEN = Color(0xFF34A853)
-    private const val PIN_KEYS = 10
+    private const val PIN_KEYS = 12
     private const val PIN_COLUMNS = 3
     private const val KEY_ROWS = 2
     private const val KEYS_PER_ROW = 7

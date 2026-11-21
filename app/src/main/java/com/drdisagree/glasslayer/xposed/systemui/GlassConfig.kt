@@ -69,6 +69,8 @@ object GlassConfig {
         private set
     var bouncerTint = PrefKeys.DEFAULT_BOUNCER_TINT / 100f
         private set
+    var bouncerAccentTint = PrefKeys.DEFAULT_BOUNCER_ACCENT_TINT / 100f
+        private set
     var volume = PrefKeys.DEFAULT_MODULE
         private set
     var volumeTint = PrefKeys.DEFAULT_VOLUME_TINT / 100f
@@ -305,6 +307,7 @@ object GlassConfig {
             percent(PrefKeys.LOCKSCREEN_SHORTCUT_TINT, PrefKeys.DEFAULT_LOCKSCREEN_SHORTCUT_TINT)
         bouncer = ModulePrefs.boolean(PrefKeys.BOUNCER, PrefKeys.DEFAULT_LOCKSCREEN)
         bouncerTint = percent(PrefKeys.BOUNCER_TINT, PrefKeys.DEFAULT_BOUNCER_TINT)
+        bouncerAccentTint = percent(PrefKeys.BOUNCER_ACCENT_TINT, PrefKeys.DEFAULT_BOUNCER_ACCENT_TINT)
         volume = ModulePrefs.boolean(PrefKeys.VOLUME, PrefKeys.DEFAULT_MODULE)
         volumeTint = percent(PrefKeys.VOLUME_TINT, PrefKeys.DEFAULT_VOLUME_TINT)
         volumeSliderTint = percent(PrefKeys.VOLUME_SLIDER_TINT, PrefKeys.DEFAULT_VOLUME_SLIDER_TINT)

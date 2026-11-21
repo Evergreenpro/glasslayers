@@ -40,6 +40,7 @@ object PrefKeys {
     const val LOCKSCREEN_SHORTCUT_TINT = "lockscreen_shortcut_tint"
     const val BOUNCER = "bouncer"
     const val BOUNCER_TINT = "bouncer_tint"
+    const val BOUNCER_ACCENT_TINT = "bouncer_accent_tint"
     const val VOLUME = "volume"
     const val VOLUME_TINT = "volume_tint"
     const val VOLUME_SLIDER_TINT = "volume_slider_tint"
@@ -139,6 +140,7 @@ object PrefKeys {
     const val DEFAULT_LOCKSCREEN = true
     const val DEFAULT_LOCKSCREEN_SHORTCUT_TINT = 30f
     const val DEFAULT_BOUNCER_TINT = 30f
+    const val DEFAULT_BOUNCER_ACCENT_TINT = 50f
     const val DEFAULT_VOLUME_TINT = 40f
     const val DEFAULT_VOLUME_SLIDER_TINT = 30f
     const val DEFAULT_ACTIVE_VOLUME_SLIDER_TINT = 65f

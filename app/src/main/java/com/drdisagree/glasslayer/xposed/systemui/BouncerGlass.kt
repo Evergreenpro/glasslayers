@@ -29,31 +29,45 @@ object BouncerGlass {
     private const val DRAW_SCOPE = "androidx.compose.ui.graphics.drawscope.DrawScope"
     private const val BOUNCER_CONTENT_KT = "${SystemUiModule.PACKAGE}.bouncer.ui.composable.BouncerContentKt"
     private const val CLIP_KT = "androidx.compose.ui.draw.ClipKt"
+    private const val BOUNCER_OVERLAY_KT = "${SystemUiModule.PACKAGE}.bouncer.ui.composable.BouncerOverlayKt"
     private const val BACKGROUND_KT = "androidx.compose.foundation.BackgroundKt"
     private const val BACKGROUND_ARGS = 3
     private const val PIN_GLASS_KEY = 0
     private const val ROUND_RECT_ARGS = 5
     private const val GET_SIZE = "getSize-NH-jbRc"
 
-    private val views = Collections.newSetFromMap(WeakHashMap<View, Boolean>())
+    private val views = WeakHashMap<View, Boolean>()
     private val recomposeScopes = Collections.newSetFromMap(WeakHashMap<Any, Boolean>())
     private val modifierToOriginal = WeakHashMap<Any, Any>()
     private val mainHandler = Handler(Looper.getMainLooper())
 
     private var pinDrawDepth = 0
+    private var actionKeyDepth = 0
+    private var overlayDepth = 0
+    @Volatile
+    private var scrimColor = Color.TRANSPARENT
+    private var drawAccent = false
     private var actionDepth = 0
     private var actionShape: Any? = null
 
     fun install(): Int {
         var hooks = 0
-        listOf(NUM_PAD_KEY, NUM_PAD_BUTTON).forEach { name ->
+        listOf(NUM_PAD_KEY to false, NUM_PAD_BUTTON to true).forEach { (name, accent) ->
             val type = HookEnv.findClass(name)
             listOf("onLayout", "onConfigurationChanged").forEach { method ->
-                hooks += type.hookAllAfter(method) { chain, _ -> track(chain.thisObject as View) }
+                hooks += type.hookAllAfter(method) { chain, _ -> track(chain.thisObject as View, accent) }
             }
         }
         hooks += HookEnv.findClass(EMERGENCY_BUTTON).hookAllAfter("onFinishInflate") { chain, _ ->
-            track(chain.thisObject as View)
+            track(chain.thisObject as View, false)
+        }
+        hooks += HookEnv.findClass(PIN_BOUNCER_KT).hookMatching(Regex("ActionButton(-.*)?")) { chain ->
+            actionKeyDepth++
+            try {
+                chain.proceed()
+            } finally {
+                actionKeyDepth--
+            }
         }
         hooks += HookEnv.findClass(PIN_BOUNCER_KT).hookMatching(Regex("PinPadButton(-.*)?")) { chain ->
             val method = chain.executable as Method
@@ -79,7 +93,18 @@ object BouncerGlass {
             if (actionDepth > 0) chain.args.getOrNull(1)?.let { actionShape = it }
             chain.proceed()
         }
+        hooks += HookEnv.findClass(BOUNCER_OVERLAY_KT).hookMatching(Regex("Background(-.*)?")) { chain ->
+            overlayDepth++
+            try {
+                chain.proceed()
+            } finally {
+                overlayDepth--
+            }
+        }
         hooks += HookEnv.findClass(BACKGROUND_KT).hookMatching(Regex("background-.*")) { chain ->
+            if (overlayDepth > 0 && chain.args.size == BACKGROUND_ARGS) {
+                (chain.args[1] as? Long)?.let { ComposeToolkit.toArgb(it) }?.let { scrimColor = it }
+            }
             if (actionDepth <= 0 || chain.args.size != BACKGROUND_ARGS || chain.args[1] !is Long) {
                 return@hookMatching chain.proceed()
             }
@@ -90,19 +115,21 @@ object BouncerGlass {
 
     fun refresh() {
         mainHandler.post {
-            views.toList().forEach { apply(it) }
+            views.toList().forEach { (view, accent) -> apply(view, accent) }
             recomposeScopes.toList().forEach { it.call("invalidateForResult", null) }
         }
     }
 
-    private fun track(view: View) {
-        views.add(view)
-        apply(view)
+    private fun track(view: View, accent: Boolean) {
+        views[view] = accent
+        apply(view, accent)
     }
 
-    private fun apply(view: View) {
-        ViewGlassUnderlay.attach(view, PrefKeys.BOUNCER, { GlassConfig.bouncerActive }, { GlassConfig.bouncerTint })
+    private fun apply(view: View, accent: Boolean) {
+        ViewGlassUnderlay.attach(view, PrefKeys.BOUNCER, { GlassConfig.bouncerActive }, { keyTint(accent) })
     }
+
+    private fun keyTint(accent: Boolean): Float = if (accent) GlassConfig.bouncerAccentTint else GlassConfig.bouncerTint
 
     private fun captureRecomposeScope(method: Method, args: List<Any?>) {
         val composerIndex = method.parameterTypes.indexOfFirst { it.name == ComposeToolkit.COMPOSER_CLASS }
@@ -117,21 +144,25 @@ object BouncerGlass {
         val original = passed?.let { modifierToOriginal[it] ?: it } ?: ComposeToolkit.emptyModifier ?: return
         args[modifierIndex] = passed?.let { original }
         if (!GlassConfig.bouncerActive) return
+        val accent = actionKeyDepth > 0
 
         val colorIndex = types.indexOfFirst { it == Long::class.javaPrimitiveType }
         (args.getOrNull(colorIndex) as? Long)?.let { color ->
             val argb = ComposeToolkit.toArgb(color)
             if (argb != null) {
-                val alpha = (OPAQUE * GlassConfig.bouncerTint).roundToInt().coerceIn(0, OPAQUE)
+                val alpha = (OPAQUE * keyTint(accent)).roundToInt().coerceIn(0, OPAQUE)
                 args[colorIndex] = ComposeToolkit.colorOf(ColorUtils.setAlphaComponent(argb, alpha))
             }
         }
 
         val drawer = ComposeModifiers.contentProxy("BouncerGlass.draw") { drawScope ->
             pinDrawDepth++
+            val outer = drawAccent
+            drawAccent = accent
             try {
                 drawScope.call("drawContent")
             } finally {
+                drawAccent = outer
                 pinDrawDepth--
             }
         } ?: return
@@ -157,7 +188,7 @@ object BouncerGlass {
         if (!GlassConfig.bouncerActive) return
         val surface = GlassConfig.surface(PrefKeys.BOUNCER)
         Guard.run("BouncerGlass.action_glass", Unit) {
-            ComposeLiquidGlass.draw(drawScope, shape, surface.blurRadiusPx, Color.TRANSPARENT, surface.style)
+            ComposeLiquidGlass.draw(drawScope, shape, surface.blurRadiusPx, scrimColor, surface.style)
         }
     }
 
@@ -170,7 +201,7 @@ object BouncerGlass {
         val corner = args[4] as? Long ?: return
         val radius = Float.fromBits((corner ushr 32).toInt())
         val colorAlpha = (args[1] as? Long)?.let { ComposeToolkit.toArgb(it) }?.let { Color.alpha(it) / OPAQUE.toFloat() } ?: 1f
-        val tint = GlassConfig.bouncerTint
+        val tint = keyTint(drawAccent)
         val fade = if (tint > 0f) (colorAlpha / tint).coerceIn(0f, 1f) else 1f
         if (fade <= 0f) return
         val surface = GlassConfig.surface(PrefKeys.BOUNCER)
@@ -183,7 +214,7 @@ object BouncerGlass {
             Float.fromBits((size and LOW_BITS).toInt()),
             FloatArray(RADII) { radius },
             surface.blurRadiusPx,
-            Color.TRANSPARENT,
+            scrimColor,
             surface.style,
             fade
         )
@@ -191,7 +222,7 @@ object BouncerGlass {
 
     private fun cappedFill(color: Long): Long {
         val argb = ComposeToolkit.toArgb(color) ?: return color
-        val limit = (OPAQUE * GlassConfig.bouncerTint).roundToInt().coerceIn(0, OPAQUE)
+        val limit = (OPAQUE * keyTint(drawAccent)).roundToInt().coerceIn(0, OPAQUE)
         if (Color.alpha(argb) <= limit) return color
         return ComposeToolkit.colorOf(ColorUtils.setAlphaComponent(argb, limit))
     }
