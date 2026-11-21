@@ -59,12 +59,9 @@ Glass Layer is made for my personal use and shared as is, with no warranty.
 3. Open Glass Layer and grant root access when asked.
 4. Restart System UI from the app.
 
-## Support
-
-[Buy me a coffee](https://buymeacoffee.com/drdisagree)
 
 ## Credits
-
+- [GlassLayer](https://github.com/Mahmud0808/GlassLayer) by DrDisagree (GPL-3.0 license)
 - [AndroidLiquidGlass](https://github.com/Kyant0/AndroidLiquidGlass) by Kyant (Apache 2.0)
 - [Roboto Flex](https://github.com/googlefonts/roboto-flex) (OFL 1.1)
 - The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the [Creative Commons 3.0 Attribution License](https://creativecommons.org/licenses/by/3.0/).
