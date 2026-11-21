@@ -33,6 +33,7 @@ object BouncerGlass {
     private const val BACKGROUND_ARGS = 3
     private const val PIN_GLASS_KEY = 0
     private const val ROUND_RECT_ARGS = 5
+    private const val GET_SIZE = "getSize-NH-jbRc"
 
     private val views = Collections.newSetFromMap(WeakHashMap<View, Boolean>())
     private val recomposeScopes = Collections.newSetFromMap(WeakHashMap<Any, Boolean>())
@@ -60,10 +61,9 @@ object BouncerGlass {
             chain.proceedWithArgs { args -> applyComposeGlass(method, args) }
         }
         hooks += HookEnv.findClass(DRAW_SCOPE).hookMatching(Regex("drawRoundRect-[^\$]*[\$]default")) { chain ->
-            if (pinDrawDepth > 0 && GlassConfig.bouncerActive) {
-                Guard.run("BouncerGlass.pin_glass", Unit) { drawPinGlass(chain.args) }
-            }
-            chain.proceed()
+            if (pinDrawDepth <= 0 || !GlassConfig.bouncerActive) return@hookMatching chain.proceed()
+            Guard.run("BouncerGlass.pin_glass", Unit) { drawPinGlass(chain.args) }
+            chain.proceedWithArgs { args -> (args.getOrNull(1) as? Long)?.let { args[1] = cappedFill(it) } }
         }
         hooks += HookEnv.findClass(BOUNCER_CONTENT_KT).hookMatching(Regex("ActionArea")) { chain ->
             captureRecomposeScope(chain.executable as Method, chain.args)
@@ -165,7 +165,8 @@ object BouncerGlass {
         if (args.size < ROUND_RECT_ARGS) return
         val drawScope = args[0] ?: return
         val topLeft = args[2] as? Long ?: return
-        val size = args[3] as? Long ?: return
+        val passedSize = args[3] as? Long ?: return
+        val size = if (passedSize ushr 32 != 0L && passedSize and LOW_BITS != 0L) passedSize else remainingSize(drawScope, topLeft) ?: return
         val corner = args[4] as? Long ?: return
         val radius = Float.fromBits((corner ushr 32).toInt())
         val colorAlpha = (args[1] as? Long)?.let { ComposeToolkit.toArgb(it) }?.let { Color.alpha(it) / OPAQUE.toFloat() } ?: 1f
@@ -186,6 +187,21 @@ object BouncerGlass {
             surface.style,
             fade
         )
+    }
+
+    private fun cappedFill(color: Long): Long {
+        val argb = ComposeToolkit.toArgb(color) ?: return color
+        val limit = (OPAQUE * GlassConfig.bouncerTint).roundToInt().coerceIn(0, OPAQUE)
+        if (Color.alpha(argb) <= limit) return color
+        return ComposeToolkit.colorOf(ColorUtils.setAlphaComponent(argb, limit))
+    }
+
+    private fun remainingSize(drawScope: Any, topLeft: Long): Long? {
+        val size = drawScope.call(GET_SIZE) as? Long ?: return null
+        val width = Float.fromBits((size ushr 32).toInt()) - Float.fromBits((topLeft ushr 32).toInt())
+        val height = Float.fromBits((size and LOW_BITS).toInt()) - Float.fromBits((topLeft and LOW_BITS).toInt())
+        if (width <= 0f || height <= 0f) return null
+        return (width.toRawBits().toLong() shl 32) or (height.toRawBits().toLong() and LOW_BITS)
     }
 
     private const val OPAQUE = 255
