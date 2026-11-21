@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <permission
-        android:name="com.drdisagree.glasslayer.permission.PREFS"
+        android:name="com.evergreenpro.glasslayers.permission.PREFS"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.drdisagree.glasslayer.permission.PREFS" />
+    <uses-permission android:name="com.evergreenpro.glasslayers.permission.PREFS" />
 
     <queries>
         <package android:name="com.android.systemui" />
@@ -17,7 +17,7 @@
     </queries>
 
     <application
-        android:name=".GlassLayerApp"
+        android:name=".GlassLayersApp"
         android:allowBackup="true"
         android:description="@string/xposed_description"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -26,12 +26,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.GlassLayer">
+        android:theme="@style/Theme.GlassLayers">
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.GlassLayer"
+            android:theme="@style/Theme.GlassLayers"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="DiscouragedApi,LockedOrientationActivity">
             <intent-filter>
@@ -57,7 +57,7 @@
 
         <provider
             android:name=".data.source.PrefsProvider"
-            android:authorities="com.drdisagree.glasslayer.prefs"
+            android:authorities="com.evergreenpro.glasslayers.prefs"
             android:directBootAware="true"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
@@ -67,7 +67,7 @@
             android:exported="true"
             android:permission="android.permission.STATUS_BAR_SERVICE">
             <intent-filter>
-                <action android:name="com.drdisagree.glasslayer.action.HOOK_REPORT" />
+                <action android:name="com.evergreenpro.glasslayers.action.HOOK_REPORT" />
             </intent-filter>
         </receiver>
     </application>

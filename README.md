@@ -1,3 +1,21 @@
+# GlassLayers
+
+Live liquid glass for your phone's System UI, an Xposed (LSPosed / Vector) module.
+
+> **Fork notice:** GlassLayers is a fork of [GlassLayer](https://github.com/Mahmud0808/GlassLayer) by
+> [Mahmud0808 (DrDisagree)](https://github.com/Mahmud0808), licensed under the GPLv3. All credit for the original
+> project goes to him. See [NOTICE.md](NOTICE.md).
+>
+> This fork adds: glass Now Playing card (incl. like / play buttons), glass lockscreen fingerprint, and a fix for the
+> restart banner getting stuck after updates.
+>
+> Heads up: this app has its own package id (`com.evergreenpro.glasslayers`), so it installs next to the original. Enable only one of
+> them in LSPosed or SystemUI gets hooked twice.
+
+---
+
+## Original README (GlassLayer)
+
 <p align="center">
   <img src="assets/banner.png" alt="Glass Layer" width="100%">
 </p>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Glass Layer</string>
+    <string name="app_name">GlassLayers</string>
     <string name="xposed_description">Liquid glass for quick settings, notifications and lockscreen</string>
 
     <string name="action_back">Back</string>
@@ -15,17 +15,17 @@
     <string name="restart_running">Restarting</string>
     <string name="restart_failed">Root access needed, restart manually</string>
     <string name="tile_label">Liquid glass</string>
-    <string name="onboarding_welcome">Glass Layer</string>
+    <string name="onboarding_welcome">GlassLayers</string>
     <string name="onboarding_summary">A few checks and your system turns to glass.</string>
     <string name="onboarding_framework">Xposed framework</string>
-    <string name="onboarding_framework_missing">Install LSPosed or Vector and enable Glass Layer</string>
+    <string name="onboarding_framework_missing">Install LSPosed or Vector and enable GlassLayers</string>
     <string name="onboarding_scope_missing">Add System UI to the module scope</string>
     <string name="onboarding_root">Root access</string>
     <string name="onboarding_root_summary">Lets the app restart SystemUI</string>
     <string name="onboarding_root_checking">Waiting for root</string>
     <string name="onboarding_root_granted">Granted</string>
     <string name="onboarding_root_denied">Not granted, restart SystemUI yourself</string>
-    <string name="onboarding_loaded">Glass Layer is running</string>
+    <string name="onboarding_loaded">GlassLayers is running</string>
     <string name="onboarding_hint">You can run these checks again from Status.</string>
     <string name="onboarding_start">Get started</string>
     <string name="onboarding_skip">Continue</string>
@@ -312,10 +312,10 @@
     <string name="about_links">Links</string>
     <string name="about_source">Source code</string>
     <string name="about_source_hint">Read it on GitHub</string>
-    <string name="about_support">Buy me a coffee</string>
-    <string name="about_support_hint">Support development</string>
+    <string name="about_support">Original project</string>
+    <string name="about_support_hint">GlassLayer by DrDisagree</string>
     <string name="about_developer">Developer</string>
-    <string name="about_developer_name">DrDisagree</string>
+    <string name="about_developer_name">Evergreenpro</string>
     <string name="about_licenses_hint">Open source notices</string>
     <string name="about_footer">Free and open source</string>
     <string name="version_label">Version %1$s</string>
@@ -323,7 +323,7 @@
     <string name="license_liquid_glass">AndroidLiquidGlass / Backdrop</string>
     <string name="license_roboto_flex">Roboto Flex</string>
     <string name="license_android_robot">Android robot</string>
-    <string name="developer_url" translatable="false">https://github.com/Mahmud0808</string>
-    <string name="source_url" translatable="false">https://github.com/Mahmud0808/GlassLayer</string>
-    <string name="support_url" translatable="false">https://buymeacoffee.com/drdisagree</string>
+    <string name="developer_url" translatable="false">https://github.com/Evergreenpro</string>
+    <string name="source_url" translatable="false">https://github.com/Evergreenpro/glasslayers</string>
+    <string name="support_url" translatable="false">https://github.com/Mahmud0808/GlassLayer</string>
 </resources>

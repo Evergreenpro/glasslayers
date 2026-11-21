@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Glass Layer"
+rootProject.name = "GlassLayers"
 include(":app")

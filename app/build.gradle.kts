@@ -9,17 +9,17 @@ plugins {
 }
 
 android {
-    namespace = "com.drdisagree.glasslayer"
+    namespace = "com.evergreenpro.glasslayers"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.drdisagree.glasslayer"
+        applicationId = "com.evergreenpro.glasslayers"
         minSdk = 36
         targetSdk = 37
-        versionCode = 6
-        versionName = "1.2.2"
+        versionCode = 1
+        versionName = "1.0.0"
     }
 
     val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -84,7 +84,7 @@ androidComponents {
     onVariants { variant ->
         variant.outputs.forEach { output ->
             if (output is VariantOutputImpl) {
-                output.outputFileName = "GlassLayer ${android.defaultConfig.versionName}.apk"
+                output.outputFileName = "GlassLayers ${android.defaultConfig.versionName}.apk"
             }
         }
     }

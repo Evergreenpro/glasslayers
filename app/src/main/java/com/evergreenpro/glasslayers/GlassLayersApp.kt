@@ -1,0 +1,29 @@
+package com.evergreenpro.glasslayers
+
+import android.app.Application
+import com.evergreenpro.glasslayers.data.source.PrefsChangeNotifier
+import com.evergreenpro.glasslayers.data.source.PrefsStorage
+import com.evergreenpro.glasslayers.data.source.XposedServiceSource
+import com.evergreenpro.glasslayers.di.AppContainer
+
+class GlassLayersApp : Application() {
+
+    @Volatile
+    private var current: AppContainer? = null
+    private var prefsNotifier: PrefsChangeNotifier? = null
+
+    val container: AppContainer
+        get() = current ?: prepare()
+
+    override fun onCreate() {
+        super.onCreate()
+        XposedServiceSource.init()
+        if (PrefsStorage.isUnlocked(this)) prepare()
+    }
+
+    @Synchronized
+    private fun prepare(): AppContainer = current ?: AppContainer(this).also { created ->
+        prefsNotifier = PrefsChangeNotifier(this).also { it.start() }
+        current = created
+    }
+}
