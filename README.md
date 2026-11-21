@@ -16,9 +16,8 @@ Live liquid glass for your phone's System UI, an Xposed (LSPosed / Vector) modul
 ## Preview
 
 <p align="center">
-  <img src="assets/Screenshot1.png" alt="Glass Layer" heigt="100%" width="100%">
+  <img src="assets/Screenshot1.png" alt="Glass Layer" heigt="25%" width="25%">
 </p>
-![GlassLayers Preview](screenshot1.png)
 
 ## Original README (GlassLayer)
 
