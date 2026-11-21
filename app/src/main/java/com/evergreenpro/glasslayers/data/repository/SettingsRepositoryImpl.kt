@@ -37,7 +37,12 @@ class SettingsRepositoryImpl(
     override val defaults: GlassSettings = GlassSettings(
         toggles = GlassToggle.entries.associateWith(GlassPrefMapper::default),
         levels = GlassLevel.entries.associateWith(GlassPrefMapper::default),
-        style = StyleParam.entries.associateWith(GlassPrefMapper::default)
+        style = StyleParam.entries.associateWith(GlassPrefMapper::default),
+        overrides = GlassSurface.entries.associateWith { surface ->
+            StyleParam.entries
+                .mapNotNull { param -> GlassPrefMapper.defaultOverride(surface, param)?.let { param to it } }
+                .toMap()
+        }.filterValues { it.isNotEmpty() }
     )
 
     override suspend fun setToggle(toggle: GlassToggle, enabled: Boolean) = withContext(Dispatchers.IO) {
@@ -75,7 +80,10 @@ class SettingsRepositoryImpl(
         style = StyleParam.entries.associateWith { local.float(GlassPrefMapper.key(it), GlassPrefMapper.default(it)) },
         overrides = GlassSurface.entries.associateWith { surface ->
             StyleParam.entries
-                .associateWith { local.float(GlassPrefMapper.key(surface, it), PrefKeys.INHERIT) }
+                .associateWith { param ->
+                    local.float(GlassPrefMapper.key(surface, param), PrefKeys.INHERIT)
+                        .takeIf { it >= 0f } ?: GlassPrefMapper.defaultOverride(surface, param) ?: PrefKeys.INHERIT
+                }
                 .filterValues { it >= 0f }
         }.filterValues { it.isNotEmpty() },
         performance = PerformanceMode.entries.getOrElse(local.float(PrefKeys.PERFORMANCE_MODE, 0f).toInt()) { PerformanceMode.FULL },

@@ -186,7 +186,7 @@ fun GlassPageScreen(page: GlassPage, viewModel: SettingsViewModel, onBack: () ->
                         val modified = if (surface == null) {
                             value.toInt() != state.defaults.style(param).toInt()
                         } else {
-                            settings.override(surface, param) != null
+                            settings.override(surface, param) != state.defaults.override(surface, param)
                         }
                         LevelSlider(
                             label = stringResource(styleLabel(param)),

@@ -195,4 +195,7 @@ object GlassPrefMapper {
     }
 
     fun key(surface: GlassSurface, param: StyleParam): String = PrefKeys.styleOverride(key(surface), key(param))
+
+    fun defaultOverride(surface: GlassSurface, param: StyleParam): Float? =
+        PrefKeys.SURFACE_STYLE_DEFAULTS[key(surface)]?.get(key(param))
 }

@@ -208,14 +208,16 @@ object GlassConfig {
     val lockscreenNotificationsActive: Boolean
         get() = isActive && lockscreenNotifications && !DozeTracker.isDozing
 
+    // Shortcuts and the fingerprint stay visible on the always-on display, so their glass stays on there too.
+    // (Tinting already ignored doze, which left a see-through circle with no glass until the screen was touched.)
     val lockscreenShortcutsActive: Boolean
-        get() = isActive && lockscreenShortcuts && !DozeTracker.isDozing
+        get() = isActive && lockscreenShortcuts
 
     val lockscreenNowPlayingActive: Boolean
         get() = isActive && lockscreenNowPlaying && !DozeTracker.isDozing
 
     val lockscreenFingerprintActive: Boolean
-        get() = isActive && lockscreenFingerprint && !DozeTracker.isDozing
+        get() = isActive && lockscreenFingerprint
 
     val bouncerActive: Boolean
         get() = isActive && bouncer
@@ -399,7 +401,7 @@ object GlassConfig {
 
     private fun override(surface: String, param: String, inherited: Float): Float {
         val value = ModulePrefs.float(PrefKeys.styleOverride(surface, param), PrefKeys.INHERIT)
-        return if (value < 0f) inherited else value
+        return if (value >= 0f) value else PrefKeys.SURFACE_STYLE_DEFAULTS[surface]?.get(param) ?: inherited
     }
 
     private fun density(): Float = Resources.getSystem().displayMetrics.density

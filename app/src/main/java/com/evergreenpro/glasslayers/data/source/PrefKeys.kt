@@ -125,6 +125,14 @@ object PrefKeys {
 
     fun styleOverride(surface: String, param: String): String = surface + "_" + param
 
+    /**
+     * Style values a surface starts with, in each param's own unit (dp for blur, percent for the rest).
+     * An override that was never set falls back to this before it falls back to the global style.
+     */
+    val SURFACE_STYLE_DEFAULTS: Map<String, Map<String, Float>> = mapOf(
+        LOCKSCREEN_NOW_PLAYING to mapOf(BLUR_RADIUS to 22f, RIM to 0f)
+    )
+
     const val INHERIT = -1f
     const val DEFAULT_ENABLED = false
     const val DEFAULT_MODULE = true

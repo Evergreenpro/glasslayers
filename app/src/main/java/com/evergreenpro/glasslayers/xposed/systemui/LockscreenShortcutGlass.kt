@@ -82,7 +82,6 @@ object LockscreenShortcutGlass {
             }
         }
 
-        DozeTracker.addListener(::refresh)
         return hooks
     }
 
