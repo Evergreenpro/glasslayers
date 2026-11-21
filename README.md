@@ -13,6 +13,9 @@ Live liquid glass for your phone's System UI, an Xposed (LSPosed / Vector) modul
 > them in LSPosed or SystemUI gets hooked twice.
 
 ---
+## Preview
+
+![GlassLayers Preview](screenshot1.png)
 
 ## Original README (GlassLayer)
 
