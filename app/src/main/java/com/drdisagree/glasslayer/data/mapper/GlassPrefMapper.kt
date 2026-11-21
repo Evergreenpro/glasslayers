@@ -36,6 +36,8 @@ object GlassPrefMapper {
         GlassToggle.INSTALLER_DIALOGS -> PrefKeys.INSTALLER_DIALOGS
         GlassToggle.KEYBOARD -> PrefKeys.KEYBOARD
         GlassToggle.QS_MOTION -> PrefKeys.QS_MOTION
+        GlassToggle.UNLOCK_RIPPLE -> PrefKeys.UNLOCK_RIPPLE
+        GlassToggle.CHARGING_RIPPLE -> PrefKeys.CHARGING_RIPPLE
         GlassToggle.SWITCH_PRESS -> PrefKeys.SWITCH_PRESS
         GlassToggle.BUTTON_PRESS -> PrefKeys.BUTTON_PRESS
     }
@@ -94,6 +96,9 @@ object GlassPrefMapper {
         GlassLevel.KEYBOARD_TINT -> PrefKeys.KEYBOARD_TINT
         GlassLevel.KEYBOARD_KEY_TINT -> PrefKeys.KEYBOARD_KEY_TINT
         GlassLevel.KEYBOARD_ACCENT_TINT -> PrefKeys.KEYBOARD_ACCENT_TINT
+        GlassLevel.UNLOCK_RIPPLE_DURATION -> PrefKeys.UNLOCK_RIPPLE_DURATION
+        GlassLevel.UNLOCK_RIPPLE_STRENGTH -> PrefKeys.UNLOCK_RIPPLE_STRENGTH
+        GlassLevel.UNLOCK_RIPPLE_SPEED -> PrefKeys.UNLOCK_RIPPLE_SPEED
     }
 
     fun default(level: GlassLevel): Float = when (level) {
@@ -144,6 +149,9 @@ object GlassPrefMapper {
         GlassLevel.KEYBOARD_TINT -> PrefKeys.DEFAULT_KEYBOARD_TINT
         GlassLevel.KEYBOARD_KEY_TINT -> PrefKeys.DEFAULT_KEYBOARD_KEY_TINT
         GlassLevel.KEYBOARD_ACCENT_TINT -> PrefKeys.DEFAULT_KEYBOARD_ACCENT_TINT
+        GlassLevel.UNLOCK_RIPPLE_DURATION -> PrefKeys.DEFAULT_UNLOCK_RIPPLE_DURATION
+        GlassLevel.UNLOCK_RIPPLE_STRENGTH -> PrefKeys.DEFAULT_UNLOCK_RIPPLE_STRENGTH
+        GlassLevel.UNLOCK_RIPPLE_SPEED -> PrefKeys.DEFAULT_UNLOCK_RIPPLE_SPEED
     }
 
     fun key(param: StyleParam): String = when (param) {

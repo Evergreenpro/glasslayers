@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.drdisagree.glasslayer.R
+import com.drdisagree.glasslayer.domain.model.LevelUnit
 import com.drdisagree.glasslayer.ui.components.GlassIconButton
 import com.drdisagree.glasslayer.ui.components.LocalBackdrop
 import com.drdisagree.glasslayer.ui.components.liquid.LiquidSlider
@@ -40,7 +41,9 @@ internal fun LevelSlider(
     modified: Boolean,
     onChange: (Float) -> Unit,
     onReset: () -> Unit,
-    onDraft: (Float) -> Unit = {}
+    onDraft: (Float) -> Unit = {},
+    min: Float = 0f,
+    unit: LevelUnit = LevelUnit.PERCENT
 ) {
     var draft by remember(value) { mutableFloatStateOf(value) }
     Column(Modifier.fillMaxWidth()) {
@@ -71,7 +74,11 @@ internal fun LevelSlider(
                 )
             }
             Text(
-                stringResource(R.string.value_percent, (if (percentOfMax) draft / max * PERCENT else draft).roundToInt()),
+                if (unit == LevelUnit.MILLIS) {
+                    stringResource(R.string.value_seconds, draft / MILLIS)
+                } else {
+                    stringResource(R.string.value_percent, (if (percentOfMax) draft / max * PERCENT else draft).roundToInt())
+                },
                 style = MaterialTheme.typography.labelLarge,
                 color = OnInkMuted,
                 modifier = Modifier.padding(start = 10.dp, end = 8.dp)
@@ -90,7 +97,7 @@ internal fun LevelSlider(
                     draft = it
                     onDraft(it)
                 },
-                valueRange = 0f..max,
+                valueRange = min..max,
                 backdrop = LocalBackdrop.current,
                 onValueChangeFinished = { onChange(draft) }
             )
@@ -101,3 +108,4 @@ internal fun LevelSlider(
 private const val RESET_FADE_MS = 200
 private const val RESET_SCALE = 0.6f
 private const val PERCENT = 100f
+private const val MILLIS = 1000f

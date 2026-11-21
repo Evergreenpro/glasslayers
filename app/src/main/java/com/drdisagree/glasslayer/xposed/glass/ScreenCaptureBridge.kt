@@ -81,6 +81,7 @@ object ScreenCaptureBridge {
         crop: Rect,
         scale: Float,
         exclude: Array<SurfaceControl>,
+        wholeDisplay: Boolean,
         onResult: (Bitmap?) -> Unit
     ): Boolean {
         val builderClass = builderClass ?: return false
@@ -94,7 +95,7 @@ object ScreenCaptureBridge {
             val listener = listenerConstructor.newInstance(consumer)
             inFlightConsumer = consumer
             val layers = exclude.filter { it.isValid }.toTypedArray()
-            when (captureRoot(displayId, crop, scale, layers, listener)) {
+            when (if (wholeDisplay) false else captureRoot(displayId, crop, scale, layers, listener)) {
                 true -> return true
                 null -> return false
                 false -> Unit

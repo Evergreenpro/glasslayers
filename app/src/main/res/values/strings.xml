@@ -220,6 +220,16 @@
     <string name="level_active_item_tint">Selected item tint</string>
 
     <string name="value_percent">%1$d%%</string>
+    <string name="value_seconds">%1$.1f s</string>
+    <string name="mod_unlock_ripple">Water ripple</string>
+    <string name="mod_unlock_ripple_summary">Ripple when you unlock</string>
+    <string name="page_unlock_ripple_title">Water ripple</string>
+    <string name="option_charging_ripple">Charging ripple</string>
+    <string name="option_charging_ripple_summary">Ripple when you plug in</string>
+    <string name="section_animation">Animation</string>
+    <string name="level_ripple_duration">Duration</string>
+    <string name="level_ripple_strength">Refraction</string>
+    <string name="level_ripple_speed">Wave speed</string>
 
     <string name="status_title">Status</string>
     <string name="section_errors">Errors</string>

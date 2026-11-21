@@ -110,6 +110,16 @@ object GlassConfig {
         private set
     var qsMotion = PrefKeys.DEFAULT_MODULE
         private set
+    var unlockRipple = PrefKeys.DEFAULT_MODULE
+        private set
+    var chargingRipple = PrefKeys.DEFAULT_MODULE
+        private set
+    var unlockRippleDurationMs = PrefKeys.DEFAULT_UNLOCK_RIPPLE_DURATION.toLong()
+        private set
+    var unlockRippleStrength = PrefKeys.DEFAULT_UNLOCK_RIPPLE_STRENGTH / 100f
+        private set
+    var unlockRippleSpeed = PrefKeys.DEFAULT_UNLOCK_RIPPLE_SPEED / 100f
+        private set
     var sliderTint = PrefKeys.DEFAULT_SLIDER_TINT / 100f
         private set
     var activeSliderTint = PrefKeys.DEFAULT_ACTIVE_SLIDER_TINT / 100f
@@ -228,6 +238,12 @@ object GlassConfig {
     val qsMotionActive: Boolean
         get() = enabled && qsMotion
 
+    val unlockRippleActive: Boolean
+        get() = enabled && unlockRipple
+
+    val chargingRippleActive: Boolean
+        get() = unlockRippleActive && chargingRipple
+
     val buttonsActive: Boolean
         get() = enabled && buttons
 
@@ -340,6 +356,11 @@ object GlassConfig {
         switchTint = percent(PrefKeys.SWITCH_TINT, PrefKeys.DEFAULT_SWITCH_TINT)
         sliders = ModulePrefs.boolean(PrefKeys.SLIDERS, PrefKeys.DEFAULT_MODULE)
         qsMotion = ModulePrefs.boolean(PrefKeys.QS_MOTION, PrefKeys.DEFAULT_MODULE)
+        unlockRipple = ModulePrefs.boolean(PrefKeys.UNLOCK_RIPPLE, PrefKeys.DEFAULT_MODULE)
+        chargingRipple = ModulePrefs.boolean(PrefKeys.CHARGING_RIPPLE, PrefKeys.DEFAULT_MODULE)
+        unlockRippleDurationMs = ModulePrefs.float(PrefKeys.UNLOCK_RIPPLE_DURATION, PrefKeys.DEFAULT_UNLOCK_RIPPLE_DURATION).toLong()
+        unlockRippleStrength = percent(PrefKeys.UNLOCK_RIPPLE_STRENGTH, PrefKeys.DEFAULT_UNLOCK_RIPPLE_STRENGTH)
+        unlockRippleSpeed = percent(PrefKeys.UNLOCK_RIPPLE_SPEED, PrefKeys.DEFAULT_UNLOCK_RIPPLE_SPEED)
         sliderTint = percent(PrefKeys.SLIDER_TINT, PrefKeys.DEFAULT_SLIDER_TINT)
         activeSliderTint = percent(PrefKeys.ACTIVE_SLIDER_TINT, PrefKeys.DEFAULT_ACTIVE_SLIDER_TINT)
         buttons = ModulePrefs.boolean(PrefKeys.BUTTONS, PrefKeys.DEFAULT_MODULE)

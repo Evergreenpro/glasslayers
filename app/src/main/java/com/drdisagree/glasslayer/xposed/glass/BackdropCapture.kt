@@ -51,6 +51,17 @@ object BackdropCapture {
         start()
     }
 
+    fun captureNow() {
+        val worker = handler ?: return
+        worker.post {
+            Guard.run(TAG, Unit) {
+                if (inFlight.get()) return@run
+                val snapshot = synchronized(clients) { clients.toList() }
+                if (snapshot.isNotEmpty()) captureFor(snapshot)
+            }
+        }
+    }
+
     fun unregister(client: BackdropClient) {
         synchronized(clients) { clients.remove(client) }
     }
@@ -114,7 +125,7 @@ object BackdropCapture {
         }
         val frame = BackdropFrame(bitmap, screenRect, pending.scale, blurred, pending.blurRadius, pending.startedAt, pending.token)
         mainHandler.post {
-            val targets = synchronized(clients) { clients.toList() }
+            val targets = synchronized(clients) { clients.toList() }.filter { !pending.exclusive || it.wantsDisplayCapture }
             targets.forEach { client -> Guard.run(CLIENT_TAG, Unit) { client.onBackdrop(frame) } }
         }
     }
@@ -126,10 +137,14 @@ object BackdropCapture {
         var scale = 0f
         var blurRadius = 0f
         var fullDisplay = false
+        var displayCapture = false
         var refreshRate = 0f
         var token: Any? = null
+        val exclusiveClients = snapshot.filter { it.wantsDisplayCapture }
+        val exclusive = exclusiveClients.isNotEmpty()
+        val participants = if (exclusive) exclusiveClients else snapshot
 
-        snapshot.forEach { client ->
+        participants.forEach { client ->
             if (!client.captureRect(clientRect)) return@forEach
             if (crop.isEmpty) crop.set(clientRect) else crop.union(clientRect)
             client.excludeLayers(exclude)
@@ -137,6 +152,7 @@ object BackdropCapture {
             scale = maxOf(scale, client.preferredScale)
             blurRadius = maxOf(blurRadius, client.preferredBlur)
             fullDisplay = fullDisplay || client.wantsFullDisplay
+            displayCapture = displayCapture || client.wantsDisplayCapture
             refreshRate = maxOf(refreshRate, client.refreshRate)
             displayId = client.displayId
         }
@@ -160,7 +176,8 @@ object BackdropCapture {
             displayId,
             captureRect,
             captureScale,
-            exclude.toTypedArray()
+            exclude.toTypedArray(),
+            displayCapture
         ) { bitmap ->
             if (bitmap == null) {
                 inFlight.set(false)
@@ -172,7 +189,20 @@ object BackdropCapture {
                 return@capture
             }
             inFlight.set(false)
-            val pending = PendingCapture(bitmap, captureRect, captureScale, blurRadius, fullDisplay, startedAt, token)
+            if (exclusive) {
+                val screenRect = if (fullDisplay) {
+                    Rect(0, 0, (bitmap.width / captureScale).roundToInt(), (bitmap.height / captureScale).roundToInt())
+                } else {
+                    Rect(captureRect)
+                }
+                val frame = BackdropFrame(bitmap, screenRect, captureScale, null, 0f, startedAt, token)
+                mainHandler.post {
+                    val targets = synchronized(clients) { clients.toList() }.filter { it.wantsDisplayCapture }
+                    targets.forEach { client -> Guard.run(CLIENT_TAG, Unit) { client.onBackdrop(frame) } }
+                }
+                return@capture
+            }
+            val pending = PendingCapture(bitmap, captureRect, captureScale, blurRadius, fullDisplay, startedAt, token, exclusive)
             if (latestCapture.getAndSet(pending) == null) worker.post(::safeProcessLatest)
         }
         if (!started) inFlight.set(false)

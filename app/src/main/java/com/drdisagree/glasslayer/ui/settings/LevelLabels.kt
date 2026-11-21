@@ -54,6 +54,9 @@ internal fun levelLabel(level: GlassLevel): Int = when (level) {
     GlassLevel.KEYBOARD_TINT -> R.string.level_keyboard_tint
     GlassLevel.KEYBOARD_KEY_TINT -> R.string.level_keyboard_key_tint
     GlassLevel.KEYBOARD_ACCENT_TINT -> R.string.level_keyboard_accent_tint
+    GlassLevel.UNLOCK_RIPPLE_DURATION -> R.string.level_ripple_duration
+    GlassLevel.UNLOCK_RIPPLE_STRENGTH -> R.string.level_ripple_strength
+    GlassLevel.UNLOCK_RIPPLE_SPEED -> R.string.level_ripple_speed
 }
 
 @StringRes

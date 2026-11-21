@@ -16,7 +16,8 @@ enum class GlassPage(
     val hasStyle: Boolean,
     val levels: List<GlassLevel>,
     val styleParams: List<StyleParam> = StyleParam.entries,
-    val options: List<GlassToggle> = emptyList()
+    val options: List<GlassToggle> = emptyList(),
+    val motion: List<GlassLevel> = emptyList()
 ) {
 
     STYLE(R.string.page_style, R.string.page_style_title, R.string.page_style_summary, null, null, true, emptyList()),
@@ -147,6 +148,17 @@ enum class GlassPage(
         false,
         emptyList()
     ),
+    UNLOCK_RIPPLE(
+        R.string.mod_unlock_ripple,
+        R.string.page_unlock_ripple_title,
+        R.string.mod_unlock_ripple_summary,
+        GlassToggle.UNLOCK_RIPPLE,
+        null,
+        false,
+        emptyList(),
+        options = listOf(GlassToggle.CHARGING_RIPPLE),
+        motion = listOf(GlassLevel.UNLOCK_RIPPLE_DURATION, GlassLevel.UNLOCK_RIPPLE_STRENGTH, GlassLevel.UNLOCK_RIPPLE_SPEED)
+    ),
     SWITCHES(
         R.string.mod_switches,
         R.string.page_switches_title,
@@ -262,5 +274,5 @@ enum class GlassPage(
     );
 
     val hasSettings: Boolean
-        get() = hasStyle || levels.isNotEmpty() || options.isNotEmpty()
+        get() = hasStyle || levels.isNotEmpty() || options.isNotEmpty() || motion.isNotEmpty()
 }
