@@ -212,7 +212,8 @@ object ViewGlassUnderlay {
         segmented: Boolean = false,
         sheenOnTop: Boolean = false,
         backdrop: ((View) -> Drawable?)? = null,
-        rimExtend: ((View) -> Int)? = null
+        rimExtend: ((View) -> Int)? = null,
+        glassFade: (() -> Float)? = null
     ) {
         val existing = targets[view]
         if (existing == null) {
@@ -224,6 +225,7 @@ object ViewGlassUnderlay {
                     it.sheenOnTop = sheenOnTop
                     it.backdrop = backdrop
                     it.rimExtend = rimExtend
+                    it.glassFade = glassFade
                 }
         } else {
             existing.tintInGlass = tintInGlass
@@ -236,6 +238,7 @@ object ViewGlassUnderlay {
             existing.baseResolved = false
             existing.backdrop = backdrop
             existing.rimExtend = rimExtend
+            existing.glassFade = glassFade
         }
         view.invalidate()
     }
@@ -292,6 +295,8 @@ object ViewGlassUnderlay {
         if (current != alpha) background.alpha = alpha
         target.appliedAlpha = alpha
         if (target.stockAlpha <= 0 || !target.glassEnabled) return false
+        val fade = target.glassFade?.invoke()?.coerceIn(0f, 1f) ?: 1f
+        if (fade <= 0f) return false
         target.dim = if (target.tintInGlass) tinted(background, tint) else Color.TRANSPARENT
         target.glassDim = ColorBlend.over(target.dim, baseDim(view, target))
 
@@ -313,7 +318,8 @@ object ViewGlassUnderlay {
             target.glassSource = background
         }
         glass.setBounds(view.scrollX, view.scrollY, view.scrollX + view.width, view.scrollY + view.height)
-        if (glass.alpha != target.stockAlpha) glass.alpha = target.stockAlpha
+        val glassAlpha = (target.stockAlpha * fade).roundToInt()
+        if (glass.alpha != glassAlpha) glass.alpha = glassAlpha
         val count = if (target.joinActive && target.clipJoin) clipJoin(canvas, target, SEAM_OVERLAP) else -1
         try {
             glass.draw(canvas)

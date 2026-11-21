@@ -1,5 +1,6 @@
 package com.drdisagree.glasslayer.ui.settings
 
+import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 
 internal data class PreviewPiece(
@@ -14,7 +15,8 @@ internal data class PreviewPiece(
     val accent: Boolean = false,
     val color: Color? = null,
     val anchor: Int = ANCHOR_NONE,
-    val visible: Boolean = true
+    val visible: Boolean = true,
+    @param:DrawableRes val icon: Int? = null
 )
 
 internal const val NO_TINT = -1

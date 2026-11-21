@@ -1,6 +1,7 @@
 package com.drdisagree.glasslayer.ui.settings
 
 import androidx.compose.ui.graphics.Color
+import com.drdisagree.glasslayer.R
 
 internal object PreviewLayouts {
 
@@ -19,6 +20,7 @@ internal object PreviewLayouts {
             piece(18, 92, 64, 64, pill(), tint = 0),
             piece(218, 92, 64, 64, pill(), tint = 0)
         )
+        GlassPage.FINGERPRINT -> listOf(piece(112, 48, 76, 76, pill(), tint = 0, icon = R.drawable.ic_preview_fingerprint))
         GlassPage.BOUNCER -> bouncer()
         GlassPage.VOLUME -> volume()
         GlassPage.POWER_MENU -> powerMenu()
@@ -154,8 +156,9 @@ internal object PreviewLayouts {
         fill: Color? = null,
         accent: Boolean = false,
         color: Color? = null,
-        anchor: Int = ANCHOR_NONE
-    ): PreviewPiece = PreviewPiece(x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat(), radii, tint, base, fill, accent, color, anchor)
+        anchor: Int = ANCHOR_NONE,
+        icon: Int? = null
+    ): PreviewPiece = PreviewPiece(x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat(), radii, tint, base, fill, accent, color, anchor, icon = icon)
 
     private fun pill(): List<Float> = listOf(PILL, PILL, PILL, PILL)
 

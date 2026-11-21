@@ -102,6 +102,15 @@ enum class GlassPage(
         true,
         listOf(GlassLevel.LOCKSCREEN_SHORTCUT_TINT)
     ),
+    FINGERPRINT(
+        R.string.mod_fingerprint,
+        R.string.page_fingerprint_title,
+        R.string.mod_fingerprint_summary,
+        GlassToggle.FINGERPRINT,
+        GlassSurface.FINGERPRINT,
+        true,
+        listOf(GlassLevel.FINGERPRINT_TINT)
+    ),
     BOUNCER(
         R.string.mod_bouncer,
         R.string.page_bouncer_title,

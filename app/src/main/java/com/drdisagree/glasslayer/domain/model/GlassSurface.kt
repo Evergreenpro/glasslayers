@@ -9,6 +9,7 @@ enum class GlassSurface {
     HEADS_UP,
     LOCKSCREEN_NOTIFICATIONS,
     LOCKSCREEN_SHORTCUTS,
+    FINGERPRINT,
     BOUNCER,
     VOLUME,
     POWER_MENU,

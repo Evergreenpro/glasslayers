@@ -69,6 +69,10 @@ object GlassConfig {
         private set
     var bouncerTint = PrefKeys.DEFAULT_BOUNCER_TINT / 100f
         private set
+    var fingerprint = PrefKeys.DEFAULT_LOCKSCREEN
+        private set
+    var fingerprintTint = PrefKeys.DEFAULT_FINGERPRINT_TINT / 100f
+        private set
     var bouncerAccentTint = PrefKeys.DEFAULT_BOUNCER_ACCENT_TINT / 100f
         private set
     var volume = PrefKeys.DEFAULT_MODULE
@@ -203,6 +207,9 @@ object GlassConfig {
     val lockscreenShortcutsActive: Boolean
         get() = isActive && lockscreenShortcuts && !DozeTracker.isDozing
 
+    val fingerprintActive: Boolean
+        get() = isActive && fingerprint
+
     val bouncerActive: Boolean
         get() = isActive && bouncer
 
@@ -307,6 +314,8 @@ object GlassConfig {
             percent(PrefKeys.LOCKSCREEN_SHORTCUT_TINT, PrefKeys.DEFAULT_LOCKSCREEN_SHORTCUT_TINT)
         bouncer = ModulePrefs.boolean(PrefKeys.BOUNCER, PrefKeys.DEFAULT_LOCKSCREEN)
         bouncerTint = percent(PrefKeys.BOUNCER_TINT, PrefKeys.DEFAULT_BOUNCER_TINT)
+        fingerprint = ModulePrefs.boolean(PrefKeys.FINGERPRINT, PrefKeys.DEFAULT_LOCKSCREEN)
+        fingerprintTint = percent(PrefKeys.FINGERPRINT_TINT, PrefKeys.DEFAULT_FINGERPRINT_TINT)
         bouncerAccentTint = percent(PrefKeys.BOUNCER_ACCENT_TINT, PrefKeys.DEFAULT_BOUNCER_ACCENT_TINT)
         volume = ModulePrefs.boolean(PrefKeys.VOLUME, PrefKeys.DEFAULT_MODULE)
         volumeTint = percent(PrefKeys.VOLUME_TINT, PrefKeys.DEFAULT_VOLUME_TINT)
