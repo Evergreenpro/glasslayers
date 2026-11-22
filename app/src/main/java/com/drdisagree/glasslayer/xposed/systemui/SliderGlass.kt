@@ -88,7 +88,7 @@ object SliderGlass {
     private fun drawSeekBar(view: SeekBar, canvas: Canvas) {
         val range = (view.max - view.min).coerceAtLeast(1)
         val fraction = (view.progress - view.min).toFloat() / range
-        val active = view.progressTintList?.getColorForState(view.drawableState, Color.WHITE) ?: accent(view)
+        val active = ThumbContrast.againstThumb(view.progressTintList?.getColorForState(view.drawableState, Color.WHITE) ?: accent(view))
         val inactive = view.progressBackgroundTintList?.getColorForState(view.drawableState, Color.GRAY) ?: ColorBlend.scaleAlpha(active, INACTIVE_ALPHA)
         drawViewSlider(view, canvas, fraction, view.isPressed, active, inactive, if (view.tickMark != null) range else 0)
     }
@@ -103,7 +103,7 @@ object SliderGlass {
         val to = view.field("valueTo") as? Float ?: return false
         val activeList = view.field("trackColorActive") as? ColorStateList
         val inactiveList = view.field("trackColorInactive") as? ColorStateList
-        val active = activeList?.getColorForState(view.drawableState, activeList.defaultColor) ?: accent(view)
+        val active = ThumbContrast.againstThumb(activeList?.getColorForState(view.drawableState, activeList.defaultColor) ?: accent(view))
         val inactive = inactiveList?.getColorForState(view.drawableState, inactiveList.defaultColor) ?: ColorBlend.scaleAlpha(active, INACTIVE_ALPHA)
         val fraction = if (to > from) (value - from) / (to - from) else 0f
         val step = view.field("stepSize") as? Float ?: 0f
@@ -219,7 +219,7 @@ object SliderGlass {
         val horizontal = width >= height
         val rtl = drawScope.call("getLayoutDirection")?.toString() == RTL
         val alpha = if (enabled) 1f else DISABLED_ALPHA
-        val active = colors.color(if (enabled) "activeTrackColor" else "disabledActiveTrackColor")
+        val active = ThumbContrast.againstThumb(colors.color(if (enabled) "activeTrackColor" else "disabledActiveTrackColor"))
         val inactive = colors.color(if (enabled) "inactiveTrackColor" else "disabledInactiveTrackColor")
         val radius = thickness / 2f
         if (horizontal) {
@@ -282,7 +282,7 @@ object SliderGlass {
         motion.update(minOf(width, height), SystemClock.uptimeMillis())
         if (motion.animating) ComposeLiquidGlass.requestFrame()
 
-        val active = colors.color(if (enabled) "activeTrackColor" else "disabledActiveTrackColor")
+        val active = ThumbContrast.againstThumb(colors.color(if (enabled) "activeTrackColor" else "disabledActiveTrackColor"))
         val inactive = colors.color(if (enabled) "inactiveTrackColor" else "disabledInactiveTrackColor")
         val behind = SurfaceBehind.color(ComposeToolkit.ownerView(drawScope))
         val rtl = drawScope.call("getLayoutDirection")?.toString() == RTL
