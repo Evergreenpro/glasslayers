@@ -1,5 +1,9 @@
 # GlassLayers
-
+<div align="left">
+<a href="https://t.me/Ashtonlezz" target="_blank">
+  <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram" />
+</a>
+</div>
 Live liquid glass for your phone's System UI, an Xposed (LSPosed / Vector) module.
 
 > **Fork notice:** GlassLayers is a fork of [GlassLayer](https://github.com/Mahmud0808/GlassLayer) by
@@ -16,11 +20,6 @@ Live liquid glass for your phone's System UI, an Xposed (LSPosed / Vector) modul
 <p align="center">
   <img src="assets/Screenshot1.png" alt="Glass Layer" heigt="25%" width="25%">
 </p>
-<div align="center">
-<a href="https://t.me/Ashtonlezz" target="_blank">
-  <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram" />
-</a>
-</div>
 
 ## README
 
