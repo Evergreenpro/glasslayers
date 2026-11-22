@@ -51,7 +51,7 @@ object BouncerGlass {
     private var actionShape: Any? = null
 
     fun install(): Int {
-        var hooks = 0
+        var hooks = BouncerScrim.install()
         listOf(NUM_PAD_KEY to false, NUM_PAD_BUTTON to true).forEach { (name, accent) ->
             val type = HookEnv.findClass(name)
             listOf("onLayout", "onConfigurationChanged").forEach { method ->
@@ -126,8 +126,10 @@ object BouncerGlass {
     }
 
     private fun apply(view: View, accent: Boolean) {
-        ViewGlassUnderlay.attach(view, PrefKeys.BOUNCER, { GlassConfig.bouncerActive }, { keyTint(accent) })
+        ViewGlassUnderlay.attach(view, PrefKeys.BOUNCER, { GlassConfig.bouncerActive }, { keyTint(accent) }, behind = { scrimDim() })
     }
+
+    private fun scrimDim(): Int = if (Color.alpha(scrimColor) > 0) scrimColor else BouncerScrim.color()
 
     private fun keyTint(accent: Boolean): Float = if (accent) GlassConfig.bouncerAccentTint else GlassConfig.bouncerTint
 
@@ -188,7 +190,7 @@ object BouncerGlass {
         if (!GlassConfig.bouncerActive) return
         val surface = GlassConfig.surface(PrefKeys.BOUNCER)
         Guard.run("BouncerGlass.action_glass", Unit) {
-            ComposeLiquidGlass.draw(drawScope, shape, surface.blurRadiusPx, scrimColor, surface.style)
+            ComposeLiquidGlass.draw(drawScope, shape, surface.blurRadiusPx, scrimDim(), surface.style)
         }
     }
 
@@ -214,7 +216,7 @@ object BouncerGlass {
             Float.fromBits((size and LOW_BITS).toInt()),
             FloatArray(RADII) { radius },
             surface.blurRadiusPx,
-            scrimColor,
+            scrimDim(),
             surface.style,
             fade
         )
