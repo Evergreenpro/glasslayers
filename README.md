@@ -11,7 +11,10 @@ Live liquid glass for your phone's System UI, an Xposed (LSPosed / Vector) modul
 >
 > Heads up: this app has its own package id (`com.evergreenpro.glasslayers`), so it installs next to the original. Enable only one of
 > them in LSPosed or SystemUI gets hooked twice.
-
+<div align="center">
+[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/Ashtonlezz)
+</a>
+</div>
 ---
 ## Preview
 
