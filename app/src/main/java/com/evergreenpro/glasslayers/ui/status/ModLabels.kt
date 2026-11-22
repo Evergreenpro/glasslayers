@@ -16,7 +16,7 @@ internal fun modLabel(name: String): Int? = when (name) {
     "NotificationGlass" -> R.string.page_notifications_title
     "LockscreenShortcutGlass" -> R.string.page_lockscreen_shortcuts_title
     "LockscreenNowPlayingGlass" -> R.string.page_lockscreen_now_playing_title
-    "LockscreenFingerprintGlass" -> R.string.page_lockscreen_fingerprint_title
+    "FingerprintGlass" -> R.string.page_fingerprint_title
     "BouncerGlass" -> R.string.page_bouncer_title
     "VolumeGlass" -> R.string.page_volume_title
     "PowerMenuGlass" -> R.string.page_power_menu_title

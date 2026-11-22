@@ -1,6 +1,6 @@
 package com.evergreenpro.glasslayers.domain.model
 
-enum class GlassLevel {
+enum class GlassLevel(val min: Float = 0f, val max: Float = 100f, val unit: LevelUnit = LevelUnit.PERCENT) {
     TILE_TINT,
     ACTIVE_TILE_TINT,
     FOOTER_TINT,
@@ -16,7 +16,7 @@ enum class GlassLevel {
     LOCKSCREEN_NOTIFICATION_TINT,
     LOCKSCREEN_SHORTCUT_TINT,
     LOCKSCREEN_NOW_PLAYING_TINT,
-    LOCKSCREEN_FINGERPRINT_TINT,
+    FINGERPRINT_TINT,
     BOUNCER_TINT,
     BOUNCER_ACCENT_TINT,
     VOLUME_TINT,
@@ -48,7 +48,8 @@ enum class GlassLevel {
     INSTALLER_DIALOG_TINT,
     KEYBOARD_TINT,
     KEYBOARD_KEY_TINT,
-    KEYBOARD_ACCENT_TINT;
-
-    val max: Float get() = 100f
+    KEYBOARD_ACCENT_TINT,
+    UNLOCK_RIPPLE_DURATION(600f, 3000f, LevelUnit.MILLIS),
+    UNLOCK_RIPPLE_STRENGTH(max = 200f),
+    UNLOCK_RIPPLE_SPEED(25f, 200f)
 }

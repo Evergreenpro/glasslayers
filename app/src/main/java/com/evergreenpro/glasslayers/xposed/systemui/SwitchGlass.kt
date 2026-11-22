@@ -153,7 +153,7 @@ object SwitchGlass {
         val tints = view.field("trackTintList") as? ColorStateList ?: view.field("mTrackTintList") as? ColorStateList
         val fallback = SolidShapes.of(view.field("mTrackDrawable") as? Drawable)?.color
         val list = tints ?: fallback
-        val on = list?.getColorForState(if (enabled) checkedState else disabledCheckedState, list.defaultColor) ?: Color.GRAY
+        val on = ThumbContrast.againstThumb(list?.getColorForState(if (enabled) checkedState else disabledCheckedState, list.defaultColor) ?: Color.GRAY)
         val off = KyantTrackColors.off(view.context, enabled)
         val trackColor = ColorUtils.blendARGB(off, on, raw)
         val behind = SurfaceBehind.color(view)
@@ -235,7 +235,7 @@ object SwitchGlass {
             }
         }
 
-        val on = colors.color(if (enabled) "checkedTrackColor" else "disabledCheckedTrackColor")
+        val on = ThumbContrast.againstThumb(colors.color(if (enabled) "checkedTrackColor" else "disabledCheckedTrackColor"))
         val off = KyantTrackColors.off(ComposeToolkit.ownerView(drawScope)?.context, enabled)
         val trackColor = ColorUtils.blendARGB(off, on, motion.fraction)
         val surface = GlassConfig.surface(PrefKeys.SWITCHES)

@@ -6,5 +6,5 @@ import kotlin.math.roundToInt
 
 class SetLevelUseCase(private val repository: SettingsRepository) {
     suspend operator fun invoke(level: GlassLevel, value: Float) =
-        repository.setLevel(level, value.coerceIn(0f, level.max).roundToInt().toFloat())
+        repository.setLevel(level, value.coerceIn(level.min, level.max).roundToInt().toFloat())
 }

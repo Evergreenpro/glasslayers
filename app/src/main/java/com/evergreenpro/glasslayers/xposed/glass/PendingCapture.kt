@@ -10,5 +10,6 @@ internal class PendingCapture(
     val blurRadius: Float,
     val fullDisplay: Boolean,
     val startedAt: Long,
-    val token: Any?
+    val token: Any?,
+    val exclusive: Boolean
 )

@@ -40,8 +40,8 @@ object PrefKeys {
     const val LOCKSCREEN_SHORTCUT_TINT = "lockscreen_shortcut_tint"
     const val LOCKSCREEN_NOW_PLAYING = "lockscreen_now_playing"
     const val LOCKSCREEN_NOW_PLAYING_TINT = "lockscreen_now_playing_tint"
-    const val LOCKSCREEN_FINGERPRINT = "lockscreen_fingerprint"
-    const val LOCKSCREEN_FINGERPRINT_TINT = "lockscreen_fingerprint_tint"
+    const val FINGERPRINT = "fingerprint"
+    const val FINGERPRINT_TINT = "fingerprint_tint"
     const val BOUNCER = "bouncer"
     const val BOUNCER_TINT = "bouncer_tint"
     const val BOUNCER_ACCENT_TINT = "bouncer_accent_tint"
@@ -75,6 +75,11 @@ object PrefKeys {
     const val TOAST_TINT = "toast_tint"
     const val BACK_GESTURE = "back_gesture"
     const val QS_MOTION = "qs_motion"
+    const val UNLOCK_RIPPLE = "unlock_ripple"
+    const val UNLOCK_RIPPLE_DURATION = "unlock_ripple_duration"
+    const val UNLOCK_RIPPLE_STRENGTH = "unlock_ripple_strength"
+    const val UNLOCK_RIPPLE_SPEED = "unlock_ripple_speed"
+    const val CHARGING_RIPPLE = "charging_ripple"
     const val BACK_GESTURE_TINT = "back_gesture_tint"
     const val BUTTONS = "buttons"
     const val BUTTON_TINT = "button_tint"
@@ -104,7 +109,7 @@ object PrefKeys {
         LOCKSCREEN_NOTIFICATIONS,
         LOCKSCREEN_SHORTCUTS,
         LOCKSCREEN_NOW_PLAYING,
-        LOCKSCREEN_FINGERPRINT,
+        FINGERPRINT,
         BOUNCER,
         VOLUME,
         POWER_MENU,
@@ -154,7 +159,7 @@ object PrefKeys {
     const val DEFAULT_LOCKSCREEN = true
     const val DEFAULT_LOCKSCREEN_SHORTCUT_TINT = 30f
     const val DEFAULT_LOCKSCREEN_NOW_PLAYING_TINT = 50f
-    const val DEFAULT_LOCKSCREEN_FINGERPRINT_TINT = 40f
+    const val DEFAULT_FINGERPRINT_TINT = 30f
     const val DEFAULT_BOUNCER_TINT = 30f
     const val DEFAULT_BOUNCER_ACCENT_TINT = 50f
     const val DEFAULT_VOLUME_TINT = 40f
@@ -187,4 +192,7 @@ object PrefKeys {
     const val DEFAULT_KEYBOARD_TINT = 85f
     const val DEFAULT_KEYBOARD_KEY_TINT = 45f
     const val DEFAULT_KEYBOARD_ACCENT_TINT = 80f
+    const val DEFAULT_UNLOCK_RIPPLE_DURATION = 1400f
+    const val DEFAULT_UNLOCK_RIPPLE_STRENGTH = 100f
+    const val DEFAULT_UNLOCK_RIPPLE_SPEED = 100f
 }

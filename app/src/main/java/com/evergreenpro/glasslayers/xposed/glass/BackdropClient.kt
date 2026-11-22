@@ -16,6 +16,9 @@ interface BackdropClient {
     val wantsFullDisplay: Boolean
         get() = false
 
+    val wantsDisplayCapture: Boolean
+        get() = false
+
     val refreshRate: Float
         get() = DEFAULT_REFRESH_RATE
 

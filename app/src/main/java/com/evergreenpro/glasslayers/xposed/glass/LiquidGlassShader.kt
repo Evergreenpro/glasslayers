@@ -30,23 +30,27 @@ object LiquidGlassShader {
         uniform float2 joinOrigin;
         uniform float2 joinSize;
         uniform float4 joinRadii;
+        uniform float2 lightDir;
 
-        float roundedBox(float2 p, float2 halfSize, float4 corners) {
-            float r = p.x > 0.0 ? (p.y > 0.0 ? corners.z : corners.y) : (p.y > 0.0 ? corners.w : corners.x);
-            float2 q = abs(p) - halfSize + r;
-            float k = max(edge * 0.5, 1.0);
+        float corner(float2 a, float r) {
+            float2 q = r - a;
+            float k = max(min(edge * 0.5, r), 1.0);
             float h = clamp(0.5 + 0.5 * (q.y - q.x) / k, 0.0, 1.0);
             float inside = mix(q.x, q.y, h) + k * h * (1.0 - h);
             return length(max(q, 0.0)) + min(inside, 0.0) - r;
         }
 
+        float roundedBox(float2 p, float2 boxSize, float4 corners) {
+            float2 far = boxSize - p;
+            float d = corner(p, corners.x);
+            d = max(d, corner(float2(far.x, p.y), corners.y));
+            d = max(d, corner(far, corners.z));
+            return max(d, corner(float2(p.x, far.y), corners.w));
+        }
+
         float shape(float2 coord) {
-            float2 halfSize = size * 0.5;
-            float d = roundedBox(coord - origin - halfSize, halfSize, radii);
-            if (join > 0.5) {
-                float2 joinHalf = joinSize * 0.5;
-                d = min(d, roundedBox(coord - joinOrigin - joinHalf, joinHalf, joinRadii));
-            }
+            float d = roundedBox(coord - origin, size, radii);
+            if (join > 0.5) d = min(d, roundedBox(coord - joinOrigin, joinSize, joinRadii));
             return d;
         }
 
@@ -63,7 +67,7 @@ object LiquidGlassShader {
             float bend = band * band * band;
             float2 offset = -normal * refraction * bend;
             float rimBand = smoothstep(-rimWidth, 0.0, d);
-            float light = clamp(dot(normal, normalize(float2(-0.5, -0.85))), 0.0, 1.0);
+            float light = clamp(dot(normal, lightDir), 0.0, 1.0);
             float shade = clamp(dot(normal, normalize(float2(0.5, 0.85))), 0.0, 1.0);
 
             if (overlay > 0.5) {
@@ -99,18 +103,16 @@ object LiquidGlassShader {
         if (rect.isEmpty) return
         val width = rect.width() * scale
         val height = rect.height() * scale
-        val maxRadius = minOf(width, height) / 2f
         val radii = join.radii
+        val topLeft = radii[0].coerceAtLeast(0f) * scale
+        val topRight = radii[2].coerceAtLeast(0f) * scale
+        val bottomRight = radii[4].coerceAtLeast(0f) * scale
+        val bottomLeft = radii[6].coerceAtLeast(0f) * scale
+        val fit = fitScale(width, height, topLeft, topRight, bottomRight, bottomLeft)
         shader.setFloatUniform("join", 1f)
         shader.setFloatUniform("joinOrigin", offset + rect.left * scale, offset + rect.top * scale)
         shader.setFloatUniform("joinSize", width, height)
-        shader.setFloatUniform(
-            "joinRadii",
-            (radii[0] * scale).coerceIn(0f, maxRadius),
-            (radii[2] * scale).coerceIn(0f, maxRadius),
-            (radii[4] * scale).coerceIn(0f, maxRadius),
-            (radii[6] * scale).coerceIn(0f, maxRadius)
-        )
+        shader.setFloatUniform("joinRadii", topLeft * fit, topRight * fit, bottomRight * fit, bottomLeft * fit)
     }
 
     fun update(
@@ -122,19 +124,20 @@ object LiquidGlassShader {
         radii: FloatArray,
         tint: Int,
         style: LiquidGlassStyle,
-        resolution: Float = 1f
+        resolution: Float = 1f,
+        lightX: Float = GlassLight.defaultX,
+        lightY: Float = GlassLight.defaultY
     ) {
+        shader.setFloatUniform("lightDir", lightX, lightY)
         val base = (minOf(width, height) * REFRACTION_RATIO).coerceAtMost(MAX_EDGE_PX * resolution)
         shader.setFloatUniform("origin", originX, originY)
         shader.setFloatUniform("size", width, height)
-        val maxRadius = minOf(width, height) / 2f
-        shader.setFloatUniform(
-            "radii",
-            radii[0].coerceIn(0f, maxRadius),
-            radii[1].coerceIn(0f, maxRadius),
-            radii[2].coerceIn(0f, maxRadius),
-            radii[3].coerceIn(0f, maxRadius)
-        )
+        val topLeft = radii[0].coerceAtLeast(0f)
+        val topRight = radii[1].coerceAtLeast(0f)
+        val bottomRight = radii[2].coerceAtLeast(0f)
+        val bottomLeft = radii[3].coerceAtLeast(0f)
+        val fit = fitScale(width, height, topLeft, topRight, bottomRight, bottomLeft)
+        shader.setFloatUniform("radii", topLeft * fit, topRight * fit, bottomRight * fit, bottomLeft * fit)
         shader.setFloatUniform("refraction", base * style.refraction)
         shader.setFloatUniform("edge", base.coerceAtLeast(1f))
         shader.setFloatUniform("dispersion", DISPERSION)
@@ -153,4 +156,15 @@ object LiquidGlassShader {
             Color.alpha(tint) / 255f
         )
     }
+
+    private fun fitScale(width: Float, height: Float, topLeft: Float, topRight: Float, bottomRight: Float, bottomLeft: Float): Float {
+        var scale = 1f
+        scale = minOf(scale, sideScale(width, topLeft + topRight))
+        scale = minOf(scale, sideScale(height, topRight + bottomRight))
+        scale = minOf(scale, sideScale(width, bottomRight + bottomLeft))
+        scale = minOf(scale, sideScale(height, bottomLeft + topLeft))
+        return scale
+    }
+
+    private fun sideScale(side: Float, sum: Float): Float = if (sum > side && sum > 0f) side / sum else 1f
 }

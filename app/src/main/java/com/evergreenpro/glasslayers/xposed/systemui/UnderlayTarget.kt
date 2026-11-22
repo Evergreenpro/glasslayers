@@ -38,6 +38,7 @@ internal class UnderlayTarget(
     var backdrop: ((View) -> Drawable?)? = null
     var rimExtend: ((View) -> Int)? = null
     var contentAlpha: (() -> Float)? = null
+    var glassFade: (() -> Float)? = null
 
     companion object {
         const val OPAQUE = 255

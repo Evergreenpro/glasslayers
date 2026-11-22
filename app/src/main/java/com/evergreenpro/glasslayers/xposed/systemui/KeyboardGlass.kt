@@ -46,6 +46,7 @@ object KeyboardGlass {
     private val stockPaddingClips = WeakHashMap<ViewGroup, Boolean>()
     private val mutated = Collections.newSetFromMap(WeakHashMap<Drawable, Boolean>())
     private val mainHandler = Handler(Looper.getMainLooper())
+    private var reportedState: String? = null
 
     fun install(): Int = HookEnv.findClass(IME_SERVICE).hookAllAfter("onStartInputView") { chain, _ ->
         val window = chain.thisObject.call("getWindow")?.call("getWindow") as? Window ?: return@hookAllAfter
@@ -61,6 +62,7 @@ object KeyboardGlass {
                     panel.invalidate()
                 }
             }
+            reportState()
         }
     }
 
@@ -78,6 +80,14 @@ object KeyboardGlass {
         walk(decor, decor.width, null)
         hideNavScrim(decor)
         panels.toList().forEach(::applyPanel)
+        reportState()
+    }
+
+    private fun reportState() {
+        val state = "panels=${panels.size} enabled=${GlassConfig.enabled} keyboard=${GlassConfig.keyboardActive}"
+        if (state == reportedState) return
+        reportedState = state
+        HookEnv.log("KeyboardGlass: $state")
     }
 
     private fun walk(view: View, rootWidth: Int, panel: View?) {

@@ -63,7 +63,16 @@ fun GlassPageScreen(page: GlassPage, viewModel: SettingsViewModel, onBack: () ->
     PageScaffold(
         title = stringResource(page.pageTitle),
         onBack = onBack,
-        pinned = if (page != GlassPage.PERFORMANCE && state.loaded) {
+        pinned = if (page == GlassPage.UNLOCK_RIPPLE && state.loaded) {
+            {
+                RipplePreview(
+                    durationMs = levelValue(GlassLevel.UNLOCK_RIPPLE_DURATION),
+                    strength = levelValue(GlassLevel.UNLOCK_RIPPLE_STRENGTH) / PERCENT,
+                    speed = levelValue(GlassLevel.UNLOCK_RIPPLE_SPEED) / PERCENT,
+                    modifier = dimmed
+                )
+            }
+        } else if (page != GlassPage.PERFORMANCE && state.loaded) {
             {
                 GlassPreview(
                     blurDp = if (StyleParam.BLUR_RADIUS in page.styleParams) styleValue(StyleParam.BLUR_RADIUS) else 0f,
@@ -168,7 +177,36 @@ fun GlassPageScreen(page: GlassPage, viewModel: SettingsViewModel, onBack: () ->
                                 levelDrafts.remove(level)
                                 viewModel.onLevelReset(level)
                             },
-                            onDraft = { levelDrafts[level] = it }
+                            onDraft = { levelDrafts[level] = it },
+                            min = level.min,
+                            unit = level.unit
+                        )
+                    }
+                }
+            }
+        }
+        if (page.motion.isNotEmpty()) {
+            item(key = "motion_label") {
+                SectionLabel(stringResource(R.string.section_animation), Modifier.animateItem(), R.drawable.ic_section_animation)
+            }
+            item(key = "motion") {
+                GlassContainer(CardShape, dimmed.animateItem(), enabled = active) {
+                    page.motion.forEachIndexed { index, level ->
+                        if (index > 0) RowDivider()
+                        LevelSlider(
+                            label = stringResource(levelLabel(level)),
+                            value = settings.level(level),
+                            max = level.max,
+                            percentOfMax = false,
+                            modified = settings.level(level).toInt() != state.defaults.level(level).toInt(),
+                            onChange = { viewModel.onLevelChange(level, it) },
+                            onReset = {
+                                levelDrafts.remove(level)
+                                viewModel.onLevelReset(level)
+                            },
+                            onDraft = { levelDrafts[level] = it },
+                            min = level.min,
+                            unit = level.unit
                         )
                     }
                 }

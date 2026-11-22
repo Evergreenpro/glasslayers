@@ -45,6 +45,7 @@ object QsOpenMotion {
         "${SystemUiModule.PACKAGE}.shade.NotificationPanelViewController",
         "${SystemUiModule.PACKAGE}.shade.ShadeSurfaceImpl"
     )
+    private const val HEADER_LAYOUT = "${SystemUiModule.PACKAGE}.util.NoRemeasureMotionLayout"
     private const val TRANSITION_LAYOUT = "${SystemUiModule.PACKAGE}.util.animation.TransitionLayout"
     private const val GRAPHICS_LAYER_KT = "androidx.compose.ui.graphics.GraphicsLayerModifierKt"
     private const val INT_STATE_CLASS = "androidx.compose.runtime.ParcelableSnapshotMutableIntState"
@@ -109,6 +110,7 @@ object QsOpenMotion {
     private val stackMatrices = WeakHashMap<View, Matrix>()
     private val movedViews = Collections.newSetFromMap(WeakHashMap<View, Boolean>())
     private val mediaViews = Collections.newSetFromMap(WeakHashMap<View, Boolean>())
+    private val headers = Collections.newSetFromMap(WeakHashMap<ViewGroup, Boolean>())
     private val location = IntArray(2)
 
     private val frameCallback = Choreographer.FrameCallback { nanos -> Guard.run(FRAME_TAG, Unit) { onFrame(nanos) } }
@@ -131,6 +133,9 @@ object QsOpenMotion {
         hooks += HookEnv.findClass(STACK_LAYOUT).hookAllBefore("onLayout") { chain ->
             val layout = chain.thisObject as? ViewGroup ?: return@hookAllBefore
             if (stack?.get() !== layout) stack = WeakReference(layout)
+        }
+        hooks += HookEnv.findClass(HEADER_LAYOUT).hookAllBefore("onMeasure") { chain ->
+            (chain.thisObject as? ViewGroup)?.let { headers += it }
         }
         hooks += HookEnv.findClass(TRANSITION_LAYOUT).hookAllBefore("dispatchDraw") { chain ->
             (chain.thisObject as? View)?.let { mediaViews += it }
@@ -265,7 +270,8 @@ object QsOpenMotion {
         return ((touchX - centerX) * PULL_X + side * abs(centerY - ANCHOR_Y) * SWEEP) * rest
     }
 
-    private fun offsetY(centerY: Float, rest: Float): Float = (ANCHOR_Y - centerY) * PULL_Y * rest
+    private fun offsetY(centerY: Float, rest: Float): Float =
+        ((ANCHOR_Y - centerY) * PULL_Y - SLIDE_DP * Resources.getSystem().displayMetrics.density) * rest
 
     private fun scaleOf(progress: Float): Float = 1f - (1f - START_SCALE) * (1f - progress)
 
@@ -280,6 +286,11 @@ object QsOpenMotion {
             for (index in 0 until group.childCount) moveView(group.getChildAt(index))
         }
         mediaViews.forEach { if (it.isAttachedToWindow && it.isShown) moveView(it) }
+        headers.forEach { header ->
+            if (header.isAttachedToWindow && header.isShown) {
+                for (index in 0 until header.childCount) moveView(header.getChildAt(index))
+            }
+        }
     }
 
     private fun moveView(view: View) {
@@ -377,5 +388,6 @@ private const val FADE_START = 0.15f
 private const val PULL_X = 0.6f
 private const val PULL_Y = 0.12f
 private const val SWEEP = 0.25f
+private const val SLIDE_DP = 28f
 private const val ANCHOR_Y = 0f
 private const val MAX_PROGRESS = 1.15f

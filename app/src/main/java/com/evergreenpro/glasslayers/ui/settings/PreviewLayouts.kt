@@ -1,6 +1,7 @@
 package com.evergreenpro.glasslayers.ui.settings
 
 import androidx.compose.ui.graphics.Color
+import com.evergreenpro.glasslayers.R
 
 internal object PreviewLayouts {
 
@@ -16,11 +17,11 @@ internal object PreviewLayouts {
         GlassPage.HEADS_UP -> listOf(piece(8, 14, 284, 72, round(24), tint = 0))
         GlassPage.LOCKSCREEN_NOTIFICATIONS -> stack(16, 38, 268, 58)
         GlassPage.LOCKSCREEN_NOW_PLAYING -> listOf(piece(16, 40, 268, 92, round(32), tint = 0))
-        GlassPage.LOCKSCREEN_FINGERPRINT -> listOf(piece(118, 60, 64, 64, round(32), tint = 0))
         GlassPage.LOCKSCREEN_SHORTCUTS -> listOf(
             piece(18, 92, 64, 64, pill(), tint = 0),
             piece(218, 92, 64, 64, pill(), tint = 0)
         )
+        GlassPage.FINGERPRINT -> listOf(piece(112, 48, 76, 76, pill(), tint = 0, icon = R.drawable.ic_preview_fingerprint))
         GlassPage.BOUNCER -> bouncer()
         GlassPage.VOLUME -> volume()
         GlassPage.POWER_MENU -> powerMenu()
@@ -156,8 +157,9 @@ internal object PreviewLayouts {
         fill: Color? = null,
         accent: Boolean = false,
         color: Color? = null,
-        anchor: Int = ANCHOR_NONE
-    ): PreviewPiece = PreviewPiece(x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat(), radii, tint, base, fill, accent, color, anchor)
+        anchor: Int = ANCHOR_NONE,
+        icon: Int? = null
+    ): PreviewPiece = PreviewPiece(x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat(), radii, tint, base, fill, accent, color, anchor, icon = icon)
 
     private fun pill(): List<Float> = listOf(PILL, PILL, PILL, PILL)
 

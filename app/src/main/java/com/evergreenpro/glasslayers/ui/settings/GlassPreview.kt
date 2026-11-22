@@ -21,12 +21,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.evergreenpro.glasslayers.ui.components.AppIcon
 import com.evergreenpro.glasslayers.ui.components.BackdropScreen
 import com.evergreenpro.glasslayers.ui.components.GlassContainer
 import com.evergreenpro.glasslayers.ui.components.GlassScene
 import com.evergreenpro.glasslayers.ui.theme.Accent
 import com.evergreenpro.glasslayers.ui.theme.GlassLayersTheme
 import com.evergreenpro.glasslayers.ui.theme.LocalPalette
+import com.evergreenpro.glasslayers.ui.theme.OnInk
 import com.kyant.backdrop.Backdrop
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
@@ -146,7 +148,11 @@ private fun GlassPiece(
                     )
                 }
             )
-    )
+    ) {
+        piece.icon?.let { icon ->
+            AppIcon(icon, Modifier.align(Alignment.Center), tint = OnInk, size = (minOf(piece.width, piece.height) * scale * ICON_FRACTION).dp)
+        }
+    }
 }
 
 private fun pieceShape(piece: PreviewPiece, scale: Float): Shape {
@@ -208,6 +214,7 @@ private val CANVAS_MARGIN = 4.dp
 private const val EDGE_GAP = 16f
 private val InnerShape = RoundedCornerShape(22.dp)
 private const val PILL_PERCENT = 50
+private const val ICON_FRACTION = 0.62f
 private const val LENS_HEIGHT = 14f
 private const val LENS_LIMIT = 0.25f
 private const val SHADOW_RADIUS = 16f

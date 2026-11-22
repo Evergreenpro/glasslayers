@@ -22,7 +22,7 @@ internal fun levelLabel(level: GlassLevel): Int = when (level) {
     GlassLevel.LOCKSCREEN_NOTIFICATION_TINT -> R.string.level_notification_tint
     GlassLevel.LOCKSCREEN_SHORTCUT_TINT -> R.string.level_shortcut_tint
     GlassLevel.LOCKSCREEN_NOW_PLAYING_TINT -> R.string.level_now_playing_tint
-    GlassLevel.LOCKSCREEN_FINGERPRINT_TINT -> R.string.level_fingerprint_tint
+    GlassLevel.FINGERPRINT_TINT -> R.string.level_fingerprint_tint
     GlassLevel.BOUNCER_TINT -> R.string.level_bouncer_tint
     GlassLevel.BOUNCER_ACCENT_TINT -> R.string.level_keyboard_accent_tint
     GlassLevel.VOLUME_TINT -> R.string.level_volume_tint
@@ -55,6 +55,9 @@ internal fun levelLabel(level: GlassLevel): Int = when (level) {
     GlassLevel.KEYBOARD_TINT -> R.string.level_keyboard_tint
     GlassLevel.KEYBOARD_KEY_TINT -> R.string.level_keyboard_key_tint
     GlassLevel.KEYBOARD_ACCENT_TINT -> R.string.level_keyboard_accent_tint
+    GlassLevel.UNLOCK_RIPPLE_DURATION -> R.string.level_ripple_duration
+    GlassLevel.UNLOCK_RIPPLE_STRENGTH -> R.string.level_ripple_strength
+    GlassLevel.UNLOCK_RIPPLE_SPEED -> R.string.level_ripple_speed
 }
 
 @StringRes

@@ -31,7 +31,11 @@ class ReportFileSource(private val context: Context) {
         read(SYSTEMUI_COMMAND)?.let { put(ReportLog.SYSTEMUI, it) }
         read(CRASH_COMMAND)?.let { put(ReportLog.CRASH, it) }
         read(FRAMEWORK_COMMAND)?.let { put(ReportLog.FRAMEWORK, it) }
+        read(appsCommand())?.let { put(ReportLog.APPS, it) }
     }
+
+    private fun appsCommand(): String =
+        ReportContract.APP_SCOPES.joinToString("; ") { "echo \"# $it pid=$(pidof $it)\"" } + "; $APPS_LOG_COMMAND"
 
     private suspend fun read(command: String): String? = RootShell.read(command) { it.readBytes().decodeToString() }
         ?.trim()
@@ -44,6 +48,7 @@ private const val SYSTEMUI_COMMAND =
         "if [ -n \"\$pid\" ]; then logcat -d -v threadtime -b main,system --pid=\$pid 2>/dev/null | tail -n 800; " +
         "else logcat -d -v threadtime -b main,system 2>/dev/null | " +
         "grep -iE 'GlassLayers|LSPosed|Vector|libxposed|AndroidRuntime|FATAL|com\\.android\\.systemui' | tail -n 800; fi"
+private const val APPS_LOG_COMMAND = "logcat -d -v threadtime -b main,system,crash -s GlassLayers:V 2>/dev/null | tail -n 600"
 private const val CRASH_COMMAND = "logcat -d -v threadtime -b crash 2>/dev/null | tail -n 300"
 private const val FRAMEWORK_COMMAND =
     "dir=/data/adb/lspd/log; " +

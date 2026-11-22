@@ -23,6 +23,13 @@ class LiquidGlassRenderer(private val resolution: Float = 1f) {
     private var directBitmap: Bitmap? = null
     private var directShader: BitmapShader? = null
     private val scaledRadii = FloatArray(4)
+    private var lightX = GlassLight.defaultX
+    private var lightY = GlassLight.defaultY
+
+    fun setLight(x: Float, y: Float) {
+        lightX = x
+        lightY = y
+    }
 
     fun draw(
         canvas: Canvas,
@@ -68,7 +75,9 @@ class LiquidGlassRenderer(private val resolution: Float = 1f) {
             scaledRadii.also { out -> radii.forEachIndexed { index, value -> out[index] = value * resolution } },
             tint,
             style,
-            resolution
+            resolution,
+            lightX,
+            lightY
         )
         node.setRenderEffect(effectFor(blurRadius * resolution))
         node.alpha = alpha
@@ -124,7 +133,9 @@ class LiquidGlassRenderer(private val resolution: Float = 1f) {
             scaledRadii.also { out -> radii.forEachIndexed { index, value -> out[index] = value * resolution } },
             tint,
             style,
-            resolution
+            resolution,
+            lightX,
+            lightY
         )
         join?.let { LiquidGlassShader.join(shader, it, pad * resolution, resolution) }
         node.setRenderEffect(RenderEffect.createRuntimeShaderEffect(shader, "image"))
@@ -176,7 +187,9 @@ class LiquidGlassRenderer(private val resolution: Float = 1f) {
             scaledRadii.also { out -> radii.forEachIndexed { index, value -> out[index] = value * resolution } },
             tint,
             style,
-            resolution
+            resolution,
+            lightX,
+            lightY
         )
         node.setRenderEffect(RenderEffect.createRuntimeShaderEffect(shader, "image"))
         node.alpha = alpha
@@ -232,7 +245,10 @@ class LiquidGlassRenderer(private val resolution: Float = 1f) {
             height + topExtend + bottomExtend,
             radii,
             tint,
-            style
+            style,
+            1f,
+            lightX,
+            lightY
         )
         join?.let { LiquidGlassShader.join(shader, it, 0f, 1f) }
         directPaint.shader = shader

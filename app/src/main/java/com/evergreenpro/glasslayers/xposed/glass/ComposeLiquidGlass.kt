@@ -116,6 +116,8 @@ object ComposeLiquidGlass : BackdropClient {
     val isAvailable: Boolean
         get() = BackdropCapture.isAvailable && localToScreen != null
 
+    private val light = FloatArray(2)
+
     private val localToScreen: Method? by lazy {
         ComposeToolkit.loadClass(LAYOUT_COORDINATES_CLASS)
             ?.methods
@@ -188,7 +190,7 @@ object ComposeLiquidGlass : BackdropClient {
         tint: Int,
         style: LiquidGlassStyle,
         alpha: Float = 1f
-    ): Boolean = render(drawScope, key, blurRadius, tint, style, alpha) { _, _, path ->
+    ): Boolean = render(drawScope, key, blurRadius, tint, style, alpha, fine = true) { _, _, path ->
         if (width <= 0f || height <= 0f) return@render null
         path.addRoundRect(0f, 0f, width, height, radii, Path.Direction.CW)
         val corners = floatArrayOf(radii[0], radii[2], radii[4], radii[6])
@@ -279,10 +281,13 @@ object ComposeLiquidGlass : BackdropClient {
             if (largest > 0f && maxOf(radii[4], radii[6]) < threshold) bottomExtend = height
         }
 
+        val renderer = surface.renderer(key)
+        GlassLight.forView(view, light)
+        renderer.setLight(light[0], light[1])
         canvas.save()
         canvas.translate(left, top)
         val drawn = paint(
-            surface.renderer(key),
+            renderer,
             canvas,
             path,
             current,
@@ -313,6 +318,7 @@ object ComposeLiquidGlass : BackdropClient {
         tint: Int,
         style: LiquidGlassStyle,
         alpha: Float,
+        fine: Boolean = false,
         clip: (Float, Float, Path) -> GlassSegment?
     ): Boolean {
         frameState?.call("getIntValue")
@@ -340,6 +346,20 @@ object ComposeLiquidGlass : BackdropClient {
             ?: 1f
         val right = left + width * scaleX
         val bottom = top + height * scaleY
+        val axisX = localToScreen?.invoke(coordinator, packOffset(width, 0f)) as? Long
+        val axisY = localToScreen?.invoke(coordinator, packOffset(0f, height)) as? Long
+        if (axisX != null && axisY != null) {
+            GlassLight.fromAxes(
+                Float.fromBits((axisX ushr 32).toInt()) - left,
+                Float.fromBits((axisX and 0xFFFFFFFFL).toInt()) - top,
+                Float.fromBits((axisY ushr 32).toInt()) - left,
+                Float.fromBits((axisY and 0xFFFFFFFFL).toInt()) - top,
+                light
+            )
+        } else {
+            light[0] = GlassLight.defaultX
+            light[1] = GlassLight.defaultY
+        }
 
         val surface = synchronized(surfaces) {
             surfaces.getOrPut(node) { GlassSurface() }.also {
@@ -373,10 +393,12 @@ object ComposeLiquidGlass : BackdropClient {
         val canvas = ComposeToolkit.nativeCanvas(drawScope) ?: return false
         val segment = clip(width, height, surface.path(key)) ?: return false
 
+        val renderer = surface.renderer(key, fine)
+        renderer.setLight(light[0], light[1])
         canvas.save()
         canvas.translate(segment.left, segment.top)
         val drawn = paint(
-            surface.renderer(key),
+            renderer,
             canvas,
             segment.path,
             current,
@@ -396,6 +418,9 @@ object ComposeLiquidGlass : BackdropClient {
         canvas.restore()
         return drawn
     }
+
+    private fun packOffset(x: Float, y: Float): Long =
+        (x.toRawBits().toLong() shl 32) or (y.toRawBits().toLong() and 0xFFFFFFFFL)
 
     private fun paint(
         renderer: LiquidGlassRenderer,

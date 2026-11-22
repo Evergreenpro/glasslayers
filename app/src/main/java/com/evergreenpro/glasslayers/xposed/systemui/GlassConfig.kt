@@ -69,13 +69,13 @@ object GlassConfig {
         private set
     var lockscreenNowPlayingTint = PrefKeys.DEFAULT_LOCKSCREEN_NOW_PLAYING_TINT / 100f
         private set
-    var lockscreenFingerprint = PrefKeys.DEFAULT_LOCKSCREEN
-        private set
-    var lockscreenFingerprintTint = PrefKeys.DEFAULT_LOCKSCREEN_FINGERPRINT_TINT / 100f
-        private set
     var bouncer = PrefKeys.DEFAULT_LOCKSCREEN
         private set
     var bouncerTint = PrefKeys.DEFAULT_BOUNCER_TINT / 100f
+        private set
+    var fingerprint = PrefKeys.DEFAULT_LOCKSCREEN
+        private set
+    var fingerprintTint = PrefKeys.DEFAULT_FINGERPRINT_TINT / 100f
         private set
     var bouncerAccentTint = PrefKeys.DEFAULT_BOUNCER_ACCENT_TINT / 100f
         private set
@@ -113,6 +113,16 @@ object GlassConfig {
     var sliders = PrefKeys.DEFAULT_MODULE
         private set
     var qsMotion = PrefKeys.DEFAULT_MODULE
+        private set
+    var unlockRipple = PrefKeys.DEFAULT_MODULE
+        private set
+    var chargingRipple = PrefKeys.DEFAULT_MODULE
+        private set
+    var unlockRippleDurationMs = PrefKeys.DEFAULT_UNLOCK_RIPPLE_DURATION.toLong()
+        private set
+    var unlockRippleStrength = PrefKeys.DEFAULT_UNLOCK_RIPPLE_STRENGTH / 100f
+        private set
+    var unlockRippleSpeed = PrefKeys.DEFAULT_UNLOCK_RIPPLE_SPEED / 100f
         private set
     var sliderTint = PrefKeys.DEFAULT_SLIDER_TINT / 100f
         private set
@@ -216,8 +226,9 @@ object GlassConfig {
     val lockscreenNowPlayingActive: Boolean
         get() = isActive && lockscreenNowPlaying && !DozeTracker.isDozing
 
-    val lockscreenFingerprintActive: Boolean
-        get() = isActive && lockscreenFingerprint
+
+    val fingerprintActive: Boolean
+        get() = isActive && fingerprint
 
     val bouncerActive: Boolean
         get() = isActive && bouncer
@@ -236,6 +247,12 @@ object GlassConfig {
 
     val qsMotionActive: Boolean
         get() = enabled && qsMotion
+
+    val unlockRippleActive: Boolean
+        get() = enabled && unlockRipple
+
+    val chargingRippleActive: Boolean
+        get() = unlockRippleActive && chargingRipple
 
     val buttonsActive: Boolean
         get() = enabled && buttons
@@ -324,11 +341,10 @@ object GlassConfig {
         lockscreenNowPlaying = ModulePrefs.boolean(PrefKeys.LOCKSCREEN_NOW_PLAYING, PrefKeys.DEFAULT_LOCKSCREEN)
         lockscreenNowPlayingTint =
             percent(PrefKeys.LOCKSCREEN_NOW_PLAYING_TINT, PrefKeys.DEFAULT_LOCKSCREEN_NOW_PLAYING_TINT)
-        lockscreenFingerprint = ModulePrefs.boolean(PrefKeys.LOCKSCREEN_FINGERPRINT, PrefKeys.DEFAULT_LOCKSCREEN)
-        lockscreenFingerprintTint =
-            percent(PrefKeys.LOCKSCREEN_FINGERPRINT_TINT, PrefKeys.DEFAULT_LOCKSCREEN_FINGERPRINT_TINT)
         bouncer = ModulePrefs.boolean(PrefKeys.BOUNCER, PrefKeys.DEFAULT_LOCKSCREEN)
         bouncerTint = percent(PrefKeys.BOUNCER_TINT, PrefKeys.DEFAULT_BOUNCER_TINT)
+        fingerprint = ModulePrefs.boolean(PrefKeys.FINGERPRINT, PrefKeys.DEFAULT_LOCKSCREEN)
+        fingerprintTint = percent(PrefKeys.FINGERPRINT_TINT, PrefKeys.DEFAULT_FINGERPRINT_TINT)
         bouncerAccentTint = percent(PrefKeys.BOUNCER_ACCENT_TINT, PrefKeys.DEFAULT_BOUNCER_ACCENT_TINT)
         volume = ModulePrefs.boolean(PrefKeys.VOLUME, PrefKeys.DEFAULT_MODULE)
         volumeTint = percent(PrefKeys.VOLUME_TINT, PrefKeys.DEFAULT_VOLUME_TINT)
@@ -353,6 +369,11 @@ object GlassConfig {
         switchTint = percent(PrefKeys.SWITCH_TINT, PrefKeys.DEFAULT_SWITCH_TINT)
         sliders = ModulePrefs.boolean(PrefKeys.SLIDERS, PrefKeys.DEFAULT_MODULE)
         qsMotion = ModulePrefs.boolean(PrefKeys.QS_MOTION, PrefKeys.DEFAULT_MODULE)
+        unlockRipple = ModulePrefs.boolean(PrefKeys.UNLOCK_RIPPLE, PrefKeys.DEFAULT_MODULE)
+        chargingRipple = ModulePrefs.boolean(PrefKeys.CHARGING_RIPPLE, PrefKeys.DEFAULT_MODULE)
+        unlockRippleDurationMs = ModulePrefs.float(PrefKeys.UNLOCK_RIPPLE_DURATION, PrefKeys.DEFAULT_UNLOCK_RIPPLE_DURATION).toLong()
+        unlockRippleStrength = percent(PrefKeys.UNLOCK_RIPPLE_STRENGTH, PrefKeys.DEFAULT_UNLOCK_RIPPLE_STRENGTH)
+        unlockRippleSpeed = percent(PrefKeys.UNLOCK_RIPPLE_SPEED, PrefKeys.DEFAULT_UNLOCK_RIPPLE_SPEED)
         sliderTint = percent(PrefKeys.SLIDER_TINT, PrefKeys.DEFAULT_SLIDER_TINT)
         activeSliderTint = percent(PrefKeys.ACTIVE_SLIDER_TINT, PrefKeys.DEFAULT_ACTIVE_SLIDER_TINT)
         buttons = ModulePrefs.boolean(PrefKeys.BUTTONS, PrefKeys.DEFAULT_MODULE)

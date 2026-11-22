@@ -20,7 +20,7 @@ object GlassPrefMapper {
         GlassToggle.LOCKSCREEN_NOTIFICATIONS -> PrefKeys.LOCKSCREEN_NOTIFICATIONS
         GlassToggle.LOCKSCREEN_SHORTCUTS -> PrefKeys.LOCKSCREEN_SHORTCUTS
         GlassToggle.LOCKSCREEN_NOW_PLAYING -> PrefKeys.LOCKSCREEN_NOW_PLAYING
-        GlassToggle.LOCKSCREEN_FINGERPRINT -> PrefKeys.LOCKSCREEN_FINGERPRINT
+        GlassToggle.FINGERPRINT -> PrefKeys.FINGERPRINT
         GlassToggle.BOUNCER -> PrefKeys.BOUNCER
         GlassToggle.VOLUME -> PrefKeys.VOLUME
         GlassToggle.POWER_MENU -> PrefKeys.POWER_MENU
@@ -37,6 +37,8 @@ object GlassPrefMapper {
         GlassToggle.INSTALLER_DIALOGS -> PrefKeys.INSTALLER_DIALOGS
         GlassToggle.KEYBOARD -> PrefKeys.KEYBOARD
         GlassToggle.QS_MOTION -> PrefKeys.QS_MOTION
+        GlassToggle.UNLOCK_RIPPLE -> PrefKeys.UNLOCK_RIPPLE
+        GlassToggle.CHARGING_RIPPLE -> PrefKeys.CHARGING_RIPPLE
         GlassToggle.SWITCH_PRESS -> PrefKeys.SWITCH_PRESS
         GlassToggle.BUTTON_PRESS -> PrefKeys.BUTTON_PRESS
     }
@@ -46,7 +48,7 @@ object GlassPrefMapper {
         GlassToggle.LOCKSCREEN_NOTIFICATIONS,
         GlassToggle.LOCKSCREEN_SHORTCUTS,
         GlassToggle.LOCKSCREEN_NOW_PLAYING,
-        GlassToggle.LOCKSCREEN_FINGERPRINT,
+        GlassToggle.FINGERPRINT,
         GlassToggle.BOUNCER -> PrefKeys.DEFAULT_LOCKSCREEN
         else -> PrefKeys.DEFAULT_MODULE
     }
@@ -67,7 +69,7 @@ object GlassPrefMapper {
         GlassLevel.LOCKSCREEN_NOTIFICATION_TINT -> PrefKeys.LOCKSCREEN_NOTIFICATION_TINT
         GlassLevel.LOCKSCREEN_SHORTCUT_TINT -> PrefKeys.LOCKSCREEN_SHORTCUT_TINT
         GlassLevel.LOCKSCREEN_NOW_PLAYING_TINT -> PrefKeys.LOCKSCREEN_NOW_PLAYING_TINT
-        GlassLevel.LOCKSCREEN_FINGERPRINT_TINT -> PrefKeys.LOCKSCREEN_FINGERPRINT_TINT
+        GlassLevel.FINGERPRINT_TINT -> PrefKeys.FINGERPRINT_TINT
         GlassLevel.BOUNCER_TINT -> PrefKeys.BOUNCER_TINT
         GlassLevel.BOUNCER_ACCENT_TINT -> PrefKeys.BOUNCER_ACCENT_TINT
         GlassLevel.VOLUME_TINT -> PrefKeys.VOLUME_TINT
@@ -100,6 +102,9 @@ object GlassPrefMapper {
         GlassLevel.KEYBOARD_TINT -> PrefKeys.KEYBOARD_TINT
         GlassLevel.KEYBOARD_KEY_TINT -> PrefKeys.KEYBOARD_KEY_TINT
         GlassLevel.KEYBOARD_ACCENT_TINT -> PrefKeys.KEYBOARD_ACCENT_TINT
+        GlassLevel.UNLOCK_RIPPLE_DURATION -> PrefKeys.UNLOCK_RIPPLE_DURATION
+        GlassLevel.UNLOCK_RIPPLE_STRENGTH -> PrefKeys.UNLOCK_RIPPLE_STRENGTH
+        GlassLevel.UNLOCK_RIPPLE_SPEED -> PrefKeys.UNLOCK_RIPPLE_SPEED
     }
 
     fun default(level: GlassLevel): Float = when (level) {
@@ -118,7 +123,7 @@ object GlassPrefMapper {
         GlassLevel.LOCKSCREEN_NOTIFICATION_TINT -> PrefKeys.DEFAULT_LOCKSCREEN_NOTIFICATION_TINT
         GlassLevel.LOCKSCREEN_SHORTCUT_TINT -> PrefKeys.DEFAULT_LOCKSCREEN_SHORTCUT_TINT
         GlassLevel.LOCKSCREEN_NOW_PLAYING_TINT -> PrefKeys.DEFAULT_LOCKSCREEN_NOW_PLAYING_TINT
-        GlassLevel.LOCKSCREEN_FINGERPRINT_TINT -> PrefKeys.DEFAULT_LOCKSCREEN_FINGERPRINT_TINT
+        GlassLevel.FINGERPRINT_TINT -> PrefKeys.DEFAULT_FINGERPRINT_TINT
         GlassLevel.BOUNCER_TINT -> PrefKeys.DEFAULT_BOUNCER_TINT
         GlassLevel.BOUNCER_ACCENT_TINT -> PrefKeys.DEFAULT_BOUNCER_ACCENT_TINT
         GlassLevel.VOLUME_TINT -> PrefKeys.DEFAULT_VOLUME_TINT
@@ -151,6 +156,9 @@ object GlassPrefMapper {
         GlassLevel.KEYBOARD_TINT -> PrefKeys.DEFAULT_KEYBOARD_TINT
         GlassLevel.KEYBOARD_KEY_TINT -> PrefKeys.DEFAULT_KEYBOARD_KEY_TINT
         GlassLevel.KEYBOARD_ACCENT_TINT -> PrefKeys.DEFAULT_KEYBOARD_ACCENT_TINT
+        GlassLevel.UNLOCK_RIPPLE_DURATION -> PrefKeys.DEFAULT_UNLOCK_RIPPLE_DURATION
+        GlassLevel.UNLOCK_RIPPLE_STRENGTH -> PrefKeys.DEFAULT_UNLOCK_RIPPLE_STRENGTH
+        GlassLevel.UNLOCK_RIPPLE_SPEED -> PrefKeys.DEFAULT_UNLOCK_RIPPLE_SPEED
     }
 
     fun key(param: StyleParam): String = when (param) {
@@ -176,7 +184,7 @@ object GlassPrefMapper {
         GlassSurface.LOCKSCREEN_NOTIFICATIONS -> PrefKeys.LOCKSCREEN_NOTIFICATIONS
         GlassSurface.LOCKSCREEN_SHORTCUTS -> PrefKeys.LOCKSCREEN_SHORTCUTS
         GlassSurface.LOCKSCREEN_NOW_PLAYING -> PrefKeys.LOCKSCREEN_NOW_PLAYING
-        GlassSurface.LOCKSCREEN_FINGERPRINT -> PrefKeys.LOCKSCREEN_FINGERPRINT
+        GlassSurface.FINGERPRINT -> PrefKeys.FINGERPRINT
         GlassSurface.BOUNCER -> PrefKeys.BOUNCER
         GlassSurface.VOLUME -> PrefKeys.VOLUME
         GlassSurface.POWER_MENU -> PrefKeys.POWER_MENU

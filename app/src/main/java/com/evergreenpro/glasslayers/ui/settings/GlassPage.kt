@@ -16,7 +16,8 @@ enum class GlassPage(
     val hasStyle: Boolean,
     val levels: List<GlassLevel>,
     val styleParams: List<StyleParam> = StyleParam.entries,
-    val options: List<GlassToggle> = emptyList()
+    val options: List<GlassToggle> = emptyList(),
+    val motion: List<GlassLevel> = emptyList()
 ) {
 
     STYLE(R.string.page_style, R.string.page_style_title, R.string.page_style_summary, null, null, true, emptyList()),
@@ -111,14 +112,14 @@ enum class GlassPage(
         true,
         listOf(GlassLevel.LOCKSCREEN_NOW_PLAYING_TINT)
     ),
-    LOCKSCREEN_FINGERPRINT(
-        R.string.mod_lockscreen_fingerprint,
-        R.string.page_lockscreen_fingerprint_title,
-        R.string.mod_lockscreen_fingerprint_summary,
-        GlassToggle.LOCKSCREEN_FINGERPRINT,
-        GlassSurface.LOCKSCREEN_FINGERPRINT,
+    FINGERPRINT(
+        R.string.mod_fingerprint,
+        R.string.page_fingerprint_title,
+        R.string.mod_fingerprint_summary,
+        GlassToggle.FINGERPRINT,
+        GlassSurface.FINGERPRINT,
         true,
-        listOf(GlassLevel.LOCKSCREEN_FINGERPRINT_TINT)
+        listOf(GlassLevel.FINGERPRINT_TINT)
     ),
     BOUNCER(
         R.string.mod_bouncer,
@@ -155,6 +156,17 @@ enum class GlassPage(
         null,
         false,
         emptyList()
+    ),
+    UNLOCK_RIPPLE(
+        R.string.mod_unlock_ripple,
+        R.string.page_unlock_ripple_title,
+        R.string.mod_unlock_ripple_summary,
+        GlassToggle.UNLOCK_RIPPLE,
+        null,
+        false,
+        emptyList(),
+        options = listOf(GlassToggle.CHARGING_RIPPLE),
+        motion = listOf(GlassLevel.UNLOCK_RIPPLE_DURATION, GlassLevel.UNLOCK_RIPPLE_STRENGTH, GlassLevel.UNLOCK_RIPPLE_SPEED)
     ),
     SWITCHES(
         R.string.mod_switches,
@@ -271,5 +283,5 @@ enum class GlassPage(
     );
 
     val hasSettings: Boolean
-        get() = hasStyle || levels.isNotEmpty() || options.isNotEmpty()
+        get() = hasStyle || levels.isNotEmpty() || options.isNotEmpty() || motion.isNotEmpty()
 }
