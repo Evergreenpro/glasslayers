@@ -11,19 +11,18 @@ Live liquid glass for your phone's System UI, an Xposed (LSPosed / Vector) modul
 >
 > Heads up: this app has its own package id (`com.evergreenpro.glasslayers`), so it installs next to the original. Enable only one of
 > them in LSPosed or SystemUI gets hooked twice.
-<div align="center">
-<a href="https://t.me/Ashtonlezz" target="_blank">
-  <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram" />
-</a>
-</div>
----
 ## Preview
 
 <p align="center">
   <img src="assets/Screenshot1.png" alt="Glass Layer" heigt="25%" width="25%">
 </p>
+<div align="center">
+<a href="https://t.me/Ashtonlezz" target="_blank">
+  <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram" />
+</a>
+</div>
 
-## Original README (GlassLayer)
+## README
 
 <p align="center">
   <img src="assets/banner.png" alt="Glass Layer" width="100%">
