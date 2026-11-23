@@ -8,7 +8,7 @@ Live liquid glass for your phone's System UI, an Xposed (LSPosed / Vector) modul
 
 > **Fork notice:** GlassLayers is a fork of [GlassLayer](https://github.com/Mahmud0808/GlassLayer) by
 > [Mahmud0808 (DrDisagree)](https://github.com/Mahmud0808), licensed under the GPLv3. All credit for the original
-> project goes to him. See [NOTICE.md](NOTICE.md).
+> project goes to him.
 >
 > On top of upstream (including its fingerprint glass and water ripple), this fork adds: glass Now Playing card
 > (incl. like / play buttons), glass lockscreen clock, glass Modes tiles, and a fix for the restart banner getting
