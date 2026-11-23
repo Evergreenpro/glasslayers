@@ -40,6 +40,10 @@ object PrefKeys {
     const val LOCKSCREEN_SHORTCUT_TINT = "lockscreen_shortcut_tint"
     const val LOCKSCREEN_NOW_PLAYING = "lockscreen_now_playing"
     const val LOCKSCREEN_NOW_PLAYING_TINT = "lockscreen_now_playing_tint"
+    const val LOCKSCREEN_CLOCK = "lockscreen_clock"
+    const val LOCKSCREEN_CLOCK_TINT = "lockscreen_clock_tint"
+    const val MODES = "modes"
+    const val MODES_TINT = "modes_tint"
     const val FINGERPRINT = "fingerprint"
     const val FINGERPRINT_TINT = "fingerprint_tint"
     const val BOUNCER = "bouncer"
@@ -109,6 +113,8 @@ object PrefKeys {
         LOCKSCREEN_NOTIFICATIONS,
         LOCKSCREEN_SHORTCUTS,
         LOCKSCREEN_NOW_PLAYING,
+        LOCKSCREEN_CLOCK,
+        MODES,
         FINGERPRINT,
         BOUNCER,
         VOLUME,
@@ -159,6 +165,8 @@ object PrefKeys {
     const val DEFAULT_LOCKSCREEN = true
     const val DEFAULT_LOCKSCREEN_SHORTCUT_TINT = 30f
     const val DEFAULT_LOCKSCREEN_NOW_PLAYING_TINT = 50f
+    const val DEFAULT_LOCKSCREEN_CLOCK_TINT = 30f
+    const val DEFAULT_MODES_TINT = 40f
     const val DEFAULT_FINGERPRINT_TINT = 30f
     const val DEFAULT_BOUNCER_TINT = 30f
     const val DEFAULT_BOUNCER_ACCENT_TINT = 50f

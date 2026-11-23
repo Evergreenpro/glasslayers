@@ -127,6 +127,12 @@
     <string name="mod_lockscreen_now_playing">Now Playing</string>
     <string name="mod_lockscreen_now_playing_summary">Glass expanded Now Playing card on the lockscreen</string>
     <string name="page_lockscreen_now_playing_title">Lockscreen Now Playing</string>
+    <string name="mod_lockscreen_clock">Clock</string>
+    <string name="mod_lockscreen_clock_summary">Glass digits for the lockscreen clock</string>
+    <string name="page_lockscreen_clock_title">Lockscreen clock</string>
+    <string name="mod_modes">Modes</string>
+    <string name="mod_modes_summary">Glass mode tiles in the Modes panel</string>
+    <string name="page_modes_title">Modes</string>
     <string name="mod_lockscreen_shortcuts">Shortcuts</string>
     <string name="mod_lockscreen_shortcuts_summary">Glass lockscreen shortcuts</string>
     <string name="page_lockscreen_shortcuts_title">Lockscreen shortcuts</string>
@@ -217,6 +223,8 @@
     <string name="level_heads_up_tint">Heads-up tint</string>
     <string name="level_shortcut_tint">Shortcut tint</string>
     <string name="level_now_playing_tint">Card tint</string>
+    <string name="level_clock_tint">Clock tint</string>
+    <string name="level_modes_tint">Tile tint</string>
     <string name="level_bouncer_tint">Key tint</string>
     <string name="level_volume_tint">Panel tint</string>
     <string name="level_power_menu_button_tint">Button tint</string>

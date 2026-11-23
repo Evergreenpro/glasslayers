@@ -69,6 +69,14 @@ object GlassConfig {
         private set
     var lockscreenNowPlayingTint = PrefKeys.DEFAULT_LOCKSCREEN_NOW_PLAYING_TINT / 100f
         private set
+    var lockscreenClock = PrefKeys.DEFAULT_LOCKSCREEN
+        private set
+    var lockscreenClockTint = PrefKeys.DEFAULT_LOCKSCREEN_CLOCK_TINT / 100f
+        private set
+    var modes = PrefKeys.DEFAULT_MODULE
+        private set
+    var modesTint = PrefKeys.DEFAULT_MODES_TINT / 100f
+        private set
     var bouncer = PrefKeys.DEFAULT_LOCKSCREEN
         private set
     var bouncerTint = PrefKeys.DEFAULT_BOUNCER_TINT / 100f
@@ -226,6 +234,13 @@ object GlassConfig {
     val lockscreenNowPlayingActive: Boolean
         get() = isActive && lockscreenNowPlaying && !DozeTracker.isDozing
 
+    // The clock fades its glass out with the doze amount itself, so it is not gated on doze here.
+    val lockscreenClockActive: Boolean
+        get() = isActive && lockscreenClock
+
+    val modesActive: Boolean
+        get() = isActive && modes
+
 
     val fingerprintActive: Boolean
         get() = isActive && fingerprint
@@ -341,6 +356,10 @@ object GlassConfig {
         lockscreenNowPlaying = ModulePrefs.boolean(PrefKeys.LOCKSCREEN_NOW_PLAYING, PrefKeys.DEFAULT_LOCKSCREEN)
         lockscreenNowPlayingTint =
             percent(PrefKeys.LOCKSCREEN_NOW_PLAYING_TINT, PrefKeys.DEFAULT_LOCKSCREEN_NOW_PLAYING_TINT)
+        lockscreenClock = ModulePrefs.boolean(PrefKeys.LOCKSCREEN_CLOCK, PrefKeys.DEFAULT_LOCKSCREEN)
+        lockscreenClockTint = percent(PrefKeys.LOCKSCREEN_CLOCK_TINT, PrefKeys.DEFAULT_LOCKSCREEN_CLOCK_TINT)
+        modes = ModulePrefs.boolean(PrefKeys.MODES, PrefKeys.DEFAULT_MODULE)
+        modesTint = percent(PrefKeys.MODES_TINT, PrefKeys.DEFAULT_MODES_TINT)
         bouncer = ModulePrefs.boolean(PrefKeys.BOUNCER, PrefKeys.DEFAULT_LOCKSCREEN)
         bouncerTint = percent(PrefKeys.BOUNCER_TINT, PrefKeys.DEFAULT_BOUNCER_TINT)
         fingerprint = ModulePrefs.boolean(PrefKeys.FINGERPRINT, PrefKeys.DEFAULT_LOCKSCREEN)

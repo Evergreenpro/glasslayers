@@ -39,6 +39,7 @@ internal class UnderlayTarget(
     var rimExtend: ((View) -> Int)? = null
     var contentAlpha: (() -> Float)? = null
     var glassFade: (() -> Float)? = null
+    var maskContent = false
 
     companion object {
         const val OPAQUE = 255

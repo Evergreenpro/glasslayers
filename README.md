@@ -10,8 +10,9 @@ Live liquid glass for your phone's System UI, an Xposed (LSPosed / Vector) modul
 > [Mahmud0808 (DrDisagree)](https://github.com/Mahmud0808), licensed under the GPLv3. All credit for the original
 > project goes to him. See [NOTICE.md](NOTICE.md).
 >
-> This fork adds: glass Now Playing card (incl. like / play buttons), glass lockscreen fingerprint, and a fix for the
-> restart banner getting stuck after updates.
+> On top of upstream (including its fingerprint glass and water ripple), this fork adds: glass Now Playing card
+> (incl. like / play buttons), glass lockscreen clock, glass Modes tiles, and a fix for the restart banner getting
+> stuck after updates.
 >
 > Heads up: this app has its own package id (`com.evergreenpro.glasslayers`), so it installs next to the original. Enable only one of
 > them in LSPosed or SystemUI gets hooked twice.
@@ -33,9 +34,9 @@ Brings iOS-style liquid glass to Android. Glass Layer is a root module that turn
 
 ## Surfaces
 
-- **Quick settings**: background, tiles, footer buttons, brightness slider, media player
+- **Quick settings**: background, tiles, Modes tiles, footer buttons, brightness slider, media player
 - **Notifications**: notifications, heads-up, status bar chips, toasts
-- **Lockscreen**: notifications, Now Playing card, fingerprint, shortcuts, PIN pad
+- **Lockscreen**: notifications, Now Playing card, clock, fingerprint, shortcuts, PIN pad
 - **Volume**: volume dialog, expanded volume panel
 - **Dialogs and menus**: system dialogs, power menu, expand animations
 - **Controls**: buttons, switches, sliders (also in Settings and the package installer)

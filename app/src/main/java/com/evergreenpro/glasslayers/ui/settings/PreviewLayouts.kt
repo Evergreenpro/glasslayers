@@ -17,6 +17,16 @@ internal object PreviewLayouts {
         GlassPage.HEADS_UP -> listOf(piece(8, 14, 284, 72, round(24), tint = 0))
         GlassPage.LOCKSCREEN_NOTIFICATIONS -> stack(16, 38, 268, 58)
         GlassPage.LOCKSCREEN_NOW_PLAYING -> listOf(piece(16, 40, 268, 92, round(32), tint = 0))
+        GlassPage.LOCKSCREEN_CLOCK -> listOf(
+            piece(52, 36, 92, 112, round(30), tint = 0),
+            piece(156, 36, 92, 112, round(30), tint = 0)
+        )
+        GlassPage.MODES -> listOf(
+            piece(12, 20, 134, 56, round(24), tint = 0),
+            piece(154, 20, 134, 56, round(24), tint = 0),
+            piece(12, 84, 134, 56, round(24), tint = 0),
+            piece(154, 84, 134, 56, round(24), tint = 0)
+        )
         GlassPage.LOCKSCREEN_SHORTCUTS -> listOf(
             piece(18, 92, 64, 64, pill(), tint = 0),
             piece(218, 92, 64, 64, pill(), tint = 0)

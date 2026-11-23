@@ -100,7 +100,18 @@ object ViewGlassUnderlay {
             }
         }
         var count = -1
+        var maskCount = -1
         try {
+            if (canMask(target)) {
+                maskCount = canvas.saveLayer(
+                    view.scrollX.toFloat(),
+                    view.scrollY.toFloat(),
+                    (view.scrollX + view.width).toFloat(),
+                    (view.scrollY + view.height).toFloat(),
+                    null
+                )
+                canvas.drawColor(MASK_BASE)
+            }
             val isolate = drawUnder(view, canvas, target)
             if (target.joinActive && target.clipJoin) count = clipJoin(canvas, target, 0f)
             if (isolate) {
@@ -114,7 +125,11 @@ object ViewGlassUnderlay {
                 if (count < 0) count = layer
             }
             val fade = fadeFraction(target)
-            val result = if (fade < 1f) drawFaded(view, canvas, fade) { stock() } else stock()
+            val result = when {
+                maskCount >= 0 -> drawMasked(view, canvas) { stock() }
+                fade < 1f -> drawFaded(view, canvas, fade) { stock() }
+                else -> stock()
+            }
             if (target.rimOnTop && target.tinted != null && target.stockAlpha > 0) {
                 val strength = if (GlassConfig.glassAvailable) target.appliedAlpha.coerceAtLeast(0) / target.stockAlpha.toFloat() else 1f
                 target.glass?.drawRim(canvas, strength, target.sheenOnTop, target.rimExtend?.invoke(view) ?: 0)
@@ -122,8 +137,34 @@ object ViewGlassUnderlay {
             return result
         } finally {
             if (count >= 0) canvas.restoreToCount(count)
+            if (maskCount >= 0) canvas.restoreToCount(maskCount)
         }
     }
+
+    // Glass shows only where the view's own content (e.g. clock glyphs) is drawn. Only when the glass will really
+    // draw at full strength, so the content can never disappear.
+    private fun canMask(target: UnderlayTarget): Boolean =
+        target.maskContent && target.active() && target.glassEnabled && GlassConfig.glassAvailable &&
+            (target.glassFade?.invoke() ?: 1f) >= 1f
+
+    private inline fun drawMasked(view: View, canvas: Canvas, content: () -> Any?): Any? {
+        val layer = canvas.saveLayer(
+            view.scrollX.toFloat(),
+            view.scrollY.toFloat(),
+            (view.scrollX + view.width).toFloat(),
+            (view.scrollY + view.height).toFloat(),
+            maskPaint
+        )
+        try {
+            return content()
+        } finally {
+            canvas.restoreToCount(layer)
+        }
+    }
+
+    private val maskPaint = Paint().apply { blendMode = BlendMode.DST_IN }
+
+    private const val MASK_BASE = 0x29FFFFFF
 
     private fun fadeFraction(target: UnderlayTarget): Float {
         val fraction = target.contentAlpha ?: return 1f
@@ -235,7 +276,8 @@ object ViewGlassUnderlay {
         backdrop: ((View) -> Drawable?)? = null,
         rimExtend: ((View) -> Int)? = null,
         contentAlpha: (() -> Float)? = null,
-        glassFade: (() -> Float)? = null
+        glassFade: (() -> Float)? = null,
+        maskContent: Boolean = false
     ) {
         val existing = targets[view]
         if (existing == null) {
@@ -249,6 +291,7 @@ object ViewGlassUnderlay {
                     it.rimExtend = rimExtend
                     it.contentAlpha = contentAlpha
                     it.glassFade = glassFade
+                    it.maskContent = maskContent
                 }
         } else {
             existing.tintInGlass = tintInGlass
@@ -263,6 +306,7 @@ object ViewGlassUnderlay {
             existing.rimExtend = rimExtend
             existing.contentAlpha = contentAlpha
             existing.glassFade = glassFade
+            existing.maskContent = maskContent
         }
         view.invalidate()
     }

@@ -112,6 +112,24 @@ enum class GlassPage(
         true,
         listOf(GlassLevel.LOCKSCREEN_NOW_PLAYING_TINT)
     ),
+    LOCKSCREEN_CLOCK(
+        R.string.mod_lockscreen_clock,
+        R.string.page_lockscreen_clock_title,
+        R.string.mod_lockscreen_clock_summary,
+        GlassToggle.LOCKSCREEN_CLOCK,
+        GlassSurface.LOCKSCREEN_CLOCK,
+        true,
+        listOf(GlassLevel.LOCKSCREEN_CLOCK_TINT)
+    ),
+    MODES(
+        R.string.mod_modes,
+        R.string.page_modes_title,
+        R.string.mod_modes_summary,
+        GlassToggle.MODES,
+        GlassSurface.MODES,
+        true,
+        listOf(GlassLevel.MODES_TINT)
+    ),
     FINGERPRINT(
         R.string.mod_fingerprint,
         R.string.page_fingerprint_title,
