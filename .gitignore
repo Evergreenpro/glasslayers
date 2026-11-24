@@ -17,3 +17,4 @@ local.properties
 /app/review/
 /keystore.properties
 *.jks
+bump.sh
