@@ -8,6 +8,8 @@
     <string name="action_more">More options</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_restarting">Restarting</string>
+    <string name="menu_restart_systemui">Restart System UI</string>
+    <string name="menu_restart_failed">Restart failed</string>
 
 
     <string name="restart_title">Update ready</string>

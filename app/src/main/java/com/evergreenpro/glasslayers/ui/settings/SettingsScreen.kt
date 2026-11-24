@@ -44,7 +44,9 @@ fun SettingsScreen(
             HomeMenu(
                 visible = menuOpen,
                 issue = issue,
+                restart = state.restart,
                 onStatus = onOpenStatus,
+                onRestart = viewModel::onRestart,
                 onAbout = onOpenAbout,
                 onDismiss = { menuOpen = false }
             )
